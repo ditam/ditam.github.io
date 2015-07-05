@@ -71,9 +71,13 @@ body{
 }
 pre{
 	font-family: monospace;
+	margin: 0.5em 0;
 	padding: 0.5em;
 	line-height: 1.2em;
 	background-color: #34495e
+}
+code{
+	font-family: monospace;
 }
 h1,h2,h3,h4,h5, header{
 	font-family: 'Source Sans Pro', sans-serif;
@@ -85,6 +89,9 @@ h1{
 }
 h2{
 	font-size: 1.6em;
+}
+h3{
+	font-size: 1.3em;
 }
 .mainwrap{
 	width: 720px;
@@ -114,10 +121,66 @@ header aside a:hover{
 	color: gray;
 	color: rgb(8, 28, 48);
 }
+header p{
+	margin-top: -1.3em;
+	font-size: 1.5em;
+}
+
+nav{
+	position: absolute;
+	left: 800px;
+	top: 0px;
+	white-space: nowrap;
+	line-height: 1.5em;
+	border-left: 2px dashed lightgray;
+	padding-left: 1.5em;
+	color: rgb(100,100,100);
+}
+nav ul{
+	list-style-position: inside;
+	list-style-type: square;
+}
+nav ul li{
+	line-height: 1.2em;
+}
+nav a{
+	color: rgb(100,100,100);
+}
+nav a:hover{
+	color: rgb(15, 52, 80);
+}
 
 p{
-	margin: 1.5em 0;
+	margin: 1em 0;
 	line-height: 1.5em;
+}
+p code, div>code{
+	background-color: lightgray;
+}
+
+div.comment{
+	line-height: 1.2em;
+	padding: 1em;
+	background-color: rgb(235, 235, 235);
+}
+
+div.comment p{
+	margin-top: 1em;
+	margin-bottom: 0;
+}
+
+div.comment h2{
+	margin-top: 0;
+	margin-bottom: 0.5em;
+	font-size: 1em;
+	font-weight: bold;
+	font-family: 'Source Sans Pro', sans-serif;
+	color: rgb(15, 52, 80);
+	display: inline;
+}
+
+span.comment{
+	font-style: italic;
 }
 
 img{
