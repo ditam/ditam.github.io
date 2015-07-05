@@ -75,7 +75,7 @@ pre{
 	line-height: 1.2em;
 	background-color: #34495e
 }
-h1,h2,h3,h4,h5{
+h1,h2,h3,h4,h5, header{
 	font-family: 'Source Sans Pro', sans-serif;
 	margin: 1em 0;
 	color: rgb(15, 52, 80);
@@ -89,6 +89,30 @@ h2{
 .mainwrap{
 	width: 720px;
 	margin: 2em auto;
+}
+
+header{
+	position: relative;
+	margin-left: -3em;
+	padding-left: 3em;
+}
+header aside{
+	display: none;
+}
+header:hover aside{
+	display: block;
+	position: absolute;
+	font-size: 1.5em;
+	top: 0;
+	left: 1em;
+}
+header aside a{
+	color: lightgray;
+	text-decoration: none;
+}
+header aside a:hover{
+	color: gray;
+	color: rgb(8, 28, 48);
 }
 
 p{
