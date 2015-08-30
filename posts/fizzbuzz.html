@@ -1,0 +1,325 @@
+<html>
+<head>
+<link href="../resources/rainbow/rainbow_theme.css" rel="stylesheet" type="text/css">
+<link href="../common.css" rel="stylesheet" type="text/css">
+
+<script src="../resources/rainbow/rainbow-custom.min.js"></script>
+<script src="../resources/elevator/elevator.min.js"></script>
+<script>
+var elevator;
+window.onload = function() {
+  elevator = new Elevator({
+    mainAudio: '../resources/elevator/music.mp3',
+    endAudio: '../resources/elevator/ding.mp3'
+  });
+}
+//overrinding the browser's default print function:
+var print = console.log.bind(console);
+</script>
+</head>
+<body>
+<article class="mainwrap">
+<header>
+<h1>
+Twenty Ways to FizzBuzz</h1>
+<p>An excercise in Javascript</p>
+<nav>
+Table of Contents
+<ul>
+	<li><a href="#asd">Naive solutions (#1-5)</a></li>
+	<li><a href="#asd">Signs of sophistication (#6-7)</a></li>
+	<li><a href="#asd">Dead end: reflection (#8-9)</a></li>
+	<li><a href="#asd">Functional Programming (#10-14)</a></li>
+	<li><a href="#asd">Pattern matching (#15)</a></li>
+	<li><a href="#asd">....</a></li>
+</ul>
+</nav>
+</header>
+<p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+
+<p>The task usually goes something like this:<div class="quote">Write a program that prints all the numbers from 1 to 100. For multiples of 3, instead of the number, print "Fizz", for multiples of 5, print "Buzz". For numbers which are divisible by both 3 and 5, print "FizzBuz".</div></p>
+
+<p>TODO: FizzBuzz links, 1: http://blog.codinghorror.com/why-cant-programmers-program/</p>
+<p>TODO: ToC</p>
+<p>TODO: chapter + example counts</p>
+<p>TODO: FP revisit 7, meta:revisit 5+7 cohesion</p>
+
+<p>How the initial solution might evolve much beyond what's usually expected of it. Along the way I'll try to showcase several techniques applicable in javascript, maybe with hints of elegance even here and there.</p>
+<p>They will be presented in increasing order of complexity</p>
+
+<div class="comment"><h2>Setup:</h2>
+All the code samples in this post will assume the presence of a global <code>print</code> function, which I have defined as an alias for <code>console.log</code>:
+<pre><code data-language="javascript">var print = console.log.bind(console);</code></pre>
+(Note that the <code>bind</code> is necessary, as <code>console.log</code> (rightfully, as a method of <code>console</code>) expects <code>this</code> to be bound to <code>console</code>. If you just saved a reference to the function under a different name, you would receive an illegal invocation error.)
+<p>I felt that using a name that is less environment-specific might make the code samples easier to read. </p>
+<p>I have also redefined the global <code>window.print</code> (which brings up the print dialog in most browsers) for this very page, so you can paste the examples directly into the developer console, if you're into that sort of thing.</p>
+</div>
+
+<header>
+<h2 id="naive_solutions">
+Naive solutions (#1-5)
+</h2>
+<aside>
+<a href="#naive_solutions">§</a>
+</aside>
+</header>
+
+<p>For a start, let's see some run-of-the-mill solutions, what I assume the common answers are at those job interviews. If your time is too precious, and you've seen enough basic FizzBuzz implementations in your time, you can skip to the next chapter.</p>
+
+<h3>#1: Tongue-in-cheek</h3>
+<p>In true TDD fashion, if we need to output one particular string, we should do just that. YAGNI, KISS and all.</p>
+
+<pre><code data-language="javascript">print('1,2,Fizz,4,Buzz,Fizz,7,8,Fizz,Buzz,11,Fizz,13,14,FizzBuzz,16,17,Fizz,19,Buzz,Fizz,...');
+</code></pre>
+
+<p>
+We don't even need to make it a function, since we were only asked to do this once. At this point, our interview is probably over.</p>
+
+<p>Sadly, typing this takes definitely more time than some of the simplest solutions below.</p>
+
+<h3>#2: A loop!</h3>
+<p>Time to show off that we have a firm grasp on three of the most fundamental control structures in programming: functions, loops and if statements! (Adding these one by one could make for more individual solutions, but I'll try to leave room in the 20 for more interesting ones.)</p>
+
+<pre><code data-language="javascript">function fizzBuzz(){
+	for(var i=1;i<=100;i++){
+		if(i%5 === 0 && i%3 === 0){
+			print('FizzBuzz');
+		} else if(i%3 === 0){
+			print('Fizz');
+		} else if(i%5 === 0){
+			print('Buzz');
+		} else {
+			print(i);
+		}
+	}
+}
+</code></pre>
+<p>
+This is probably the lowest form of some sort of acceptable solution (the part where that majority can't get, apparently), but it still has a lot of issues, mostly with repetition. The program structure reflects that we will end up with exactly one output per iteration, but it comes with a cost: we repeat the modulo tests several times, and one of our cases is just a combination of two others.
+
+This latter redundancy was already part of the original task description, but as a natural language usually operates with less strict semantics than a programming language, I'd consider it less of an issue there. Code architecture doesn't have to mimic the way the task was phrased, and diverging from it already shows a higher level of abstract thought in the interviewee.
+</p>
+
+<h3>#3: Drier, with a small issue</h3>
+<p>Let's try to fix the second problem above:</p>
+<pre><code data-language="javascript">function fizzBuzz(){
+	for(var i=1;i<=100;i++){
+		if(i%3 === 0){
+			print('Fizz');
+		} 
+		if(i%5 === 0){
+			print('Buzz');
+		} 
+		if(i%3 !== 0 && i%5 !== 0) {
+			print(i);
+		}
+	}
+}
+</code></pre>
+<p>Getting rid of the else commands reflects that our options are not exclusive, a number can be divisible by 3 and 5 at the same time.</p>
+<p>However, this introduces an unexpected problem: due to the way we defined our print operation (see at the top), every print command results in a new line, breaking Fizz and Buzz into seperate lines at multiples of 15.</p>
+<p>To get around this, we can keep track of the things we want to output in a variable. Thus, we also recover this neat abstract property we lost with our latest transformation: we print strictly once per iteration, so our loop only contains one print command. (I see hints of <a href="https://en.wikipedia.org/wiki/Structured_programming">structural programming</a> in this property.)</p>
+
+<pre><code data-language="javascript">function fizzBuzz(){
+	var output;
+	for(var i=1;i<=100;i++){
+		output = '';
+		if(i%3 === 0){
+			output+='Fizz';
+		} 
+		if(i%5 === 0){
+			output+='Buzz';
+		} 
+		if(i%3 !== 0 && i%5 !== 0) {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+
+<h3>#4: Most DRY</h3>
+<p>Our latest change allows us to get rid of the repeated modulo checks: if after two checks the aggregated output is still the empty string, we can be sure that our number wasn't divisible with either 3 or 5, so we can replace the last if check as such:</p>
+<pre><code data-language="javascript">function fizzBuzz(){
+	var output;
+	for(var i=1;i<=100;i++){
+		output = '';
+		if(i%3 === 0){
+			output+='Fizz';
+		} 
+		if(i%5 === 0){
+			output+='Buzz';
+		} 
+		if(output === '') {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+<p>But this solution doesnt feel perfect. Although we did get rid of two unnecessary, and possibly expensive checks, the semantics of the code changed slightly, it became harder to read: it might not be entirely clear that the <code>output === ''</code> case corresponds exactly to the statement "i was not divisible by either 3 or 5". We have increased the coupling of the system by leaning on this connection, and now understanding the individual lines requires a more global understanding of the code.</p>
+<p>It would be probably cleaner if we introduced two new variables to store the results of the modulo checks, and reusing those we could both make our code expressive, but not repeat the modulo operations:</p>
+<pre><code data-language="javascript">function fizzBuzz(){
+	var output, currentNumberDivisibleBy3, currentNumberDivisibleBy5;
+	for(var i=1;i<=100;i++){
+		output = '';
+		currentNumberDivisibleBy3 = (i%3 === 0);
+		currentNumberDivisibleBy5 = (i%5 === 0);
+		if(currentNumberDivisibleBy3){
+			output+='Fizz';
+		} 
+		if(currentNumberDivisibleBy5){
+			output+='Buzz';
+		} 
+		if(!currentNumberDivisibleBy3 && !currentNumberDivisibleBy5) {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+<p>In reality, modulo operations are not that expensive, and our FizzBuzz program won't have any performance criteria to meet - we fell into the familiar trap of <a href="http://c2.com/cgi/wiki?PrematureOptimization">premature optimization</a> (Who knew Donald Knuth would come up this often in a post about FizzBuzz?). This might already be a slight overkill for this task, but clearly, avoiding overkill is anything but the aim of this blogpost.</p>
+
+<h3>#5: parameters everywhere</h3>
+<p>If we presented any of the previous solutions at an interview, chances are the interviewer tried to throw us off our game by rephrasing the question in ways that make our implementation fail ("What if I want 150 numbers instead of 100?" or "What if I want multiples of 7 and 8?"). And until now, after every question we would have had to rewrite substantial parts of the code.</p>
+<p>A very natural next step is turning every number in the original problem description into a parameter for our function, and we end up with something like this:</p>
+<pre><code data-language="javascript">function fizzBuzz(length, fizzNumber, buzzNumber){
+	var output;
+	for(var i=1;i<=length;i++){
+		output = '';
+		if(i%fizzNumber === 0){
+			output+='Fizz';
+		} 
+		if(i%buzzNumber === 0){
+			output+='Buzz';
+		} 
+		if(i%fizzNumber !== 0 && i%buzzNumber !== 0) {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+<p>Now a <code>fizzBuzz(100,3,5)</code> invokation will yield the same output as our earlier solutions, but we don't have to sweat if the requirements change.</p>
+<p>But turns out other interview rooms have started using our implementation as a reference in the meantime, and we just broke the public API for this immense userbase - ie. calling <code>fizzBuzz()</code> now would produce no output whatsoever, not even error messages. By adding some default values to the beginning of our implementation, we're creating a backwards compatible solution:</p>
+<pre><code data-language="javascript">var length = length || 100;
+var fizzNumber = fizzNumber || 3;
+var buzzNumber = buzzNumber || 5;
+</code></pre>
+<p><span class="comment">If you're not from a Javascript background, it might be interesting to note here how the OR operator returns the first truthy argument it encounters, and not a boolean as it would in some other languages.</span> For the rest of this page, I leave the setting of default parameter values (which will only get more and more complicated) as an excercise for the reader.</p>
+
+<header>
+<h2 id="signs">
+Signs of Sophistication (#6-7)
+</h2>
+<aside>
+<a href="#signs">§</a>
+</aside>
+</header>
+
+<h3>#6: more generality (the shape of things to come)</h3>
+<p>So far our programs handled a fixed number of values at which to display their special values - printing fizz and buzz at multiples of 3 and 5. <span class="comment">(Do note how a generalized description of our program is foreshadowing generalized solutions of the problem!)</span> We can extend this functionality easily by requesting these special values as parameters too.</p>
+
+<p>A solution which takes 3 parameters (called FizzBuzzBang) could look like this:</p>
+
+<pre><code data-language="javascript">function fizzBuzzBang(length, fizzNumber, buzzNumber, bangNumber){
+	var output;
+	for(var i=1;i<=length;i++){
+		output = '';
+		if(i%fizzNumber === 0){
+			output+='Fizz';
+		} 
+		if(i%buzzNumber === 0){
+			output+='Buzz';
+		}
+		if(i%bangNumber === 0){
+			output+='Bang';
+		} 
+		if(i%fizzNumber !== 0 && i%buzzNumber !== 0 && i%bangNumber !== 0) {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+
+<p>Which could be invoked with any three numbers we please: <code>fizzBuzzBang(100,3,5,4)</code></p> 
+
+<p>Adding a 4th, 5th marker with this method would be increasingly painstaking. We didn't make our method more generic, we just made it tailored for an other task. The necessary realization is that the thing we should be paremetrizing here is the number of inputs: we need a solution which can work with an arbitrary number of these markers.</p>
+
+<p>With array parameters we can specify both the numbers at multiples of which we want to print special terms, and while we're at it, the special terms themselves (I'm not even sure the third one was supposed to be Bang!).</p>
+
+<pre><code data-language="javascript">function fizzBuzz(length, numbers, terms){
+	var output;
+	if(numbers.length != terms.length) {
+		throw "illegal arguments!"
+	}
+	for(var i=1;i<=length;i++){
+		output = '';
+		for(var j=0;j&lt;numbers.length;j++){
+			if(i%numbers[j] === 0){
+				output+=terms[j];
+			}
+		}
+		if(output === '') {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+<p>Now <code>fizzBuzz(100,[3,4,5],['Fizz','Buzz','Bang']);</code> should output the same as our previous solution. <span class="comment">Remember, you can paste these code snippets directly into the developer console to see them running, I've set up the print function globally on this page.</span></p>
+
+<h3>#7: increased cohesion</h3>
+<p>In our previous solution, the thrown exception is a code smell, highlighting a problematic aspect of our function: there's implicit coupling between the semantics of the <code>numbers</code> and the <code>terms</code> arrays, but this is not reflected in the code besides the thrown exception when they mismatch. They need to be the same length, otherwise we can't make unambigious sense of the instruction.</p>
+<p>The cohesion of the code could be increased if these things could not be separated from each other - their relation would become expicit, and we wouldn't need to throw that error anymore. In some way, this sort of clear connection could be found in our code earlier too (around solution #5), when we named the first input param <code>fizzNumber</code>, signaling that it will correspond to the value where we print "Fizz". <span class="comment">(If we were doing some sort of metaprogramming, we could harness this information too. We'll get back to that...)</span></p>
+<p>By packaging the <code>number</code> and <code>term</code> entities into one object (called <code>marker</code> for a lack of a better word), we can create a function that's more straightforward to use, taking an array of markers as parameter:</p>
+
+<pre><code data-language="javascript">function fizzBuzz(length, markers){
+	var output;
+	for(var i=1;i<=length;i++){
+		output = '';
+		var number;
+		var term;
+		for(var j=0;j&lt;markers.length;j++){
+			number = markers[j].number;
+			term = markers[j].term;
+			if(i%number === 0){
+				output+=term;
+			}
+		}
+		if(output === '') {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+
+<p>We can recreate the original output with <code>fizzBuzz(100,[{number: 3,term: 'Fizz'},{number: 5, term: 'Buzz'}])</code></p>
+
+<header>
+<h2 id="reflection">
+Dead-end: reflection (#8-9)</h2>
+<aside>
+<a href="#reflection">§</a>
+</aside>
+</header>
+
+<p>Javascript's dynamic nature allows a program to analyze its own structure. When you're referencing an object property by its name as a string (or whenever you use the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors#Bracket_notation">bracket notation</a>, in general), you're invoking a sort of <a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">reflection</a>.  To go further, a javascript program can inspect and change its very own source code too, enabling a form of <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming.</a> I'm going to explore this path in this chapter.</p>
+
+<div class="comment">Disclaimer: whenever you think this is the tool for your current job, think again. The ideas in this chapter are meant as interesting proof-of-concept fiddlings, showing off the language's capabilities rather than practices to be followed.</div>
+
+<p></p>
+
+<h2 id="functional">
+(5-6) FP</h2>
+By now, we've replaced a lot of the constants of the solution with paremeters. Yet, some aspects of the code (such as the fact that the outcome is decided by modulo operations) remained untouchable, seemingly inherent to the problem - but this needn't be the case.
+
+We've parametrized every number of the original solution - this is a very natural progression of code, but 
+
+
+<button onclick="elevator.elevate()">Back to top</button>
+</article>
+</body>
+</html>
