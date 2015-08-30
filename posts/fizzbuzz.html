@@ -10,7 +10,9 @@ var elevator;
 window.onload = function() {
   elevator = new Elevator({
     mainAudio: '../resources/elevator/music.mp3',
-    endAudio: '../resources/elevator/ding.mp3'
+    endAudio: '../resources/elevator/ding.mp3',
+	element: document.querySelector('#elevatorBtnToTop'),
+    duration: 10000
   });
 }
 //overrinding the browser's default print function:
@@ -20,32 +22,32 @@ var print = console.log.bind(console);
 <body>
 <article class="mainwrap">
 <header>
-<h1>
+<h1 id="introduction">
 Twenty Ways to FizzBuzz</h1>
-<p>An excercise in Javascript</p>
+<p>An exercise in Javascript</p>
 <nav>
 Table of Contents
 <ul>
-	<li><a href="#asd">Naive solutions (#1-5)</a></li>
-	<li><a href="#asd">Signs of sophistication (#6-7)</a></li>
-	<li><a href="#asd">Dead end: reflection (#8-9)</a></li>
-	<li><a href="#asd">Functional Programming (#10-14)</a></li>
-	<li><a href="#asd">Pattern matching (#15)</a></li>
-	<li><a href="#asd">....</a></li>
+	<li><a href="#naive_solutions">Naive Solutions (#1-5)</a></li>
+	<li><a href="#signs_of_sophistication">Signs of Sophistication (#6-7)</a></li>
+	<li><a href="#reflection">Dead End: Reflection (#8-9)</a></li>
+	<li><a href="#functional_programming">Functional Programming (#10-12)</a></li>
+	<li><a href="#array_methods">Array Methods (#13-15)</a></li>
+	<li><a href="#constructing_functions">Constructing Functions (#15-17)</a></li>
+	<li><a href="#ecmascript6">ECMAScript 6 (#18)</a></li>
+	<li><a href="#pattern_matching">Pattern Matching (#19-20)</a></li>
 </ul>
 </nav>
 </header>
-<p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+<p>It is one of the most famous challenges in programming, a common question at interviews, a display of minimal programming competency. Yet, FizzBuzz is a challenge that <a href="http://blog.codinghorror.com/why-cant-programmers-program/">most programmers apparently can't solve</a>.</p>
 
-<p>The task usually goes something like this:<div class="quote">Write a program that prints all the numbers from 1 to 100. For multiples of 3, instead of the number, print "Fizz", for multiples of 5, print "Buzz". For numbers which are divisible by both 3 and 5, print "FizzBuz".</div></p>
+<p>It is usually worded something like this: <div class="quote">Write a program that prints all the numbers from 1 to 100. For multiples of 3, instead of the number, print "Fizz", for multiples of 5 print "Buzz". For numbers which are multiples of both 3 and 5, print "FizzBuzz".</div></p>
 
-<p>TODO: FizzBuzz links, 1: http://blog.codinghorror.com/why-cant-programmers-program/</p>
-<p>TODO: ToC</p>
-<p>TODO: chapter + example counts</p>
-<p>TODO: FP revisit 7, meta:revisit 5+7 cohesion</p>
+<p>Writing about FizzBuzz seems oddly fitting for my first blog post: I'm interviewing myself for the position.</p>
 
-<p>How the initial solution might evolve much beyond what's usually expected of it. Along the way I'll try to showcase several techniques applicable in javascript, maybe with hints of elegance even here and there.</p>
-<p>They will be presented in increasing order of complexity</p>
+<p>This article will be exploring how an initial solution might evolve much beyond what's usually expected of it. Along the way I'll try to showcase several techniques applicable in Javascript, both the good and bad parts - eventually maybe even hints of elegance, intertwined with complete dead-ends that should not be followed by any means, but might prove to be interesting proof-of-concept solutions regardless.</p>
+
+<p>I'll try to explain the motivations behind most steps of transformation, trying to keep the discussion language-independent, but also pointing out some non-trivial parts of the Javascript language here and there. All in all, finding the balance between pacing and the details of explanations will be a big challenge, a thin line I'll surely veer from often, please bear with me.</p>
 
 <div class="comment"><h2>Setup:</h2>
 All the code samples in this post will assume the presence of a global <code>print</code> function, which I have defined as an alias for <code>console.log</code>:
@@ -64,7 +66,7 @@ Naive solutions (#1-5)
 </aside>
 </header>
 
-<p>For a start, let's see some run-of-the-mill solutions, what I assume the common answers are at those job interviews. If your time is too precious, and you've seen enough basic FizzBuzz implementations in your time, you can skip to the next chapter.</p>
+<p>For a start, let's see some run-of-the-mill solutions, what I assume the common answers are at those job interviews. If your time is too precious, and you've seen enough basic FizzBuzz implementations in your time, you can skip to the <a href="#signs_of_sophistication">next chapter</a>.</p>
 
 <h3>#1: Tongue-in-cheek</h3>
 <p>In true TDD fashion, if we need to output one particular string, we should do just that. YAGNI, KISS and all.</p>
@@ -117,7 +119,7 @@ This latter redundancy was already part of the original task description, but as
 }
 </code></pre>
 <p>Getting rid of the else commands reflects that our options are not exclusive, a number can be divisible by 3 and 5 at the same time.</p>
-<p>However, this introduces an unexpected problem: due to the way we defined our print operation (see at the top), every print command results in a new line, breaking Fizz and Buzz into seperate lines at multiples of 15.</p>
+<p>However, this introduces an unexpected problem: due to the way we defined our print operation (see at the top), every print command results in a new line, breaking Fizz and Buzz into separate lines at multiples of 15.</p>
 <p>To get around this, we can keep track of the things we want to output in a variable. Thus, we also recover this neat abstract property we lost with our latest transformation: we print strictly once per iteration, so our loop only contains one print command. (I see hints of <a href="https://en.wikipedia.org/wiki/Structured_programming">structural programming</a> in this property.)</p>
 
 <pre><code data-language="javascript">function fizzBuzz(){
@@ -157,7 +159,7 @@ This latter redundancy was already part of the original task description, but as
 	}
 }
 </code></pre>
-<p>But this solution doesnt feel perfect. Although we did get rid of two unnecessary, and possibly expensive checks, the semantics of the code changed slightly, it became harder to read: it might not be entirely clear that the <code>output === ''</code> case corresponds exactly to the statement "i was not divisible by either 3 or 5". We have increased the coupling of the system by leaning on this connection, and now understanding the individual lines requires a more global understanding of the code.</p>
+<p>But this solution doesn't feel perfect. Although we did get rid of two unnecessary, and possibly expensive checks, the semantics of the code changed slightly, it became harder to read: it might not be entirely clear that the <code>output === ''</code> case corresponds exactly to the statement "it was not divisible by either 3 or 5". We have increased the coupling of the system by leaning on this connection, and now understanding the individual lines requires a more global understanding of the code.</p>
 <p>It would be probably cleaner if we introduced two new variables to store the results of the modulo checks, and reusing those we could both make our code expressive, but not repeat the modulo operations:</p>
 <pre><code data-language="javascript">function fizzBuzz(){
 	var output, currentNumberDivisibleBy3, currentNumberDivisibleBy5;
@@ -178,7 +180,7 @@ This latter redundancy was already part of the original task description, but as
 	}
 }
 </code></pre>
-<p>In reality, modulo operations are not that expensive, and our FizzBuzz program won't have any performance criteria to meet - we fell into the familiar trap of <a href="http://c2.com/cgi/wiki?PrematureOptimization">premature optimization</a> (Who knew Donald Knuth would come up this often in a post about FizzBuzz?). This might already be a slight overkill for this task, but clearly, avoiding overkill is anything but the aim of this blogpost.</p>
+<p>In reality, modulo operations are not that expensive, and our FizzBuzz program won't have any performance criteria to meet - we fell into the familiar trap of <a href="http://c2.com/cgi/wiki?PrematureOptimization">premature optimization</a> (Who knew Donald Knuth would come up this often in a post about FizzBuzz?). This might already be a slight overkill for this task, but clearly, avoiding overkill is anything but the aim of this blogp ost.</p>
 
 <h3>#5: parameters everywhere</h3>
 <p>If we presented any of the previous solutions at an interview, chances are the interviewer tried to throw us off our game by rephrasing the question in ways that make our implementation fail ("What if I want 150 numbers instead of 100?" or "What if I want multiples of 7 and 8?"). And until now, after every question we would have had to rewrite substantial parts of the code.</p>
@@ -200,20 +202,20 @@ This latter redundancy was already part of the original task description, but as
 	}
 }
 </code></pre>
-<p>Now a <code>fizzBuzz(100,3,5)</code> invokation will yield the same output as our earlier solutions, but we don't have to sweat if the requirements change.</p>
-<p>But turns out other interview rooms have started using our implementation as a reference in the meantime, and we just broke the public API for this immense userbase - ie. calling <code>fizzBuzz()</code> now would produce no output whatsoever, not even error messages. By adding some default values to the beginning of our implementation, we're creating a backwards compatible solution:</p>
+<p>Now a <code>fizzBuzz(100,3,5)</code> invocation will yield the same output as our earlier solutions, but we don't have to sweat if the requirements change.</p>
+<p>But turns out other interview rooms have started using our implementation as a reference in the meantime, and we just broke the public API for this immense user base - ie. calling <code>fizzBuzz()</code> now would produce no output whatsoever, not even error messages. By adding some default values to the beginning of our implementation, we're creating a backwards compatible solution:</p>
 <pre><code data-language="javascript">var length = length || 100;
 var fizzNumber = fizzNumber || 3;
 var buzzNumber = buzzNumber || 5;
 </code></pre>
-<p><span class="comment">If you're not from a Javascript background, it might be interesting to note here how the OR operator returns the first truthy argument it encounters, and not a boolean as it would in some other languages.</span> For the rest of this page, I leave the setting of default parameter values (which will only get more and more complicated) as an excercise for the reader.</p>
+<p><span class="comment">If you're not from a Javascript background, it might be interesting to note here how the OR operator returns the first truthy argument it encounters, and not a boolean as it would in some other languages.</span> For the rest of this page, I leave the setting of default parameter values (which will only get more and more complicated) as an exercise for the reader.</p>
 
 <header>
-<h2 id="signs">
+<h2 id="signs_of_sophistication">
 Signs of Sophistication (#6-7)
 </h2>
 <aside>
-<a href="#signs">§</a>
+<a href="#signs_of_sophistication">§</a>
 </aside>
 </header>
 
@@ -247,7 +249,7 @@ Signs of Sophistication (#6-7)
 
 <p>Adding a 4th, 5th marker with this method would be increasingly painstaking. We didn't make our method more generic, we just made it tailored for an other task. The necessary realization is that the thing we should be paremetrizing here is the number of inputs: we need a solution which can work with an arbitrary number of these markers.</p>
 
-<p>With array parameters we can specify both the numbers at multiples of which we want to print special terms, and while we're at it, the special terms themselves (I'm not even sure the third one was supposed to be Bang!).</p>
+<p>With array parameters we can specify both the numbers at multiples of which we want to print special terms, and while we're at it, the special terms themselves <span class="comment">(In case there's a debate that Fizz and Buzz should not be followed by Bang).</span></p>
 
 <pre><code data-language="javascript">function fizzBuzz(length, numbers, terms){
 	var output;
@@ -271,8 +273,8 @@ Signs of Sophistication (#6-7)
 <p>Now <code>fizzBuzz(100,[3,4,5],['Fizz','Buzz','Bang']);</code> should output the same as our previous solution. <span class="comment">Remember, you can paste these code snippets directly into the developer console to see them running, I've set up the print function globally on this page.</span></p>
 
 <h3>#7: increased cohesion</h3>
-<p>In our previous solution, the thrown exception is a code smell, highlighting a problematic aspect of our function: there's implicit coupling between the semantics of the <code>numbers</code> and the <code>terms</code> arrays, but this is not reflected in the code besides the thrown exception when they mismatch. They need to be the same length, otherwise we can't make unambigious sense of the instruction.</p>
-<p>The cohesion of the code could be increased if these things could not be separated from each other - their relation would become expicit, and we wouldn't need to throw that error anymore. In some way, this sort of clear connection could be found in our code earlier too (around solution #5), when we named the first input param <code>fizzNumber</code>, signaling that it will correspond to the value where we print "Fizz". <span class="comment">(If we were doing some sort of metaprogramming, we could harness this information too. We'll get back to that...)</span></p>
+<p>In our previous solution, the thrown exception is a code smell, highlighting a problematic aspect of our function: there's implicit coupling between the semantics of the <code>numbers</code> and the <code>terms</code> arrays, but this is not reflected in the code besides the thrown exception when they mismatch. They need to be the same length, otherwise we can't make unambiguous sense of the instruction.</p>
+<p>The cohesion of the code could be increased if these things could not be separated from each other - their relation would become explicit, and we wouldn't need to throw that error anymore. In some way, this sort of clear connection could be found in our code earlier too (around solution #5), when we named the first input param <code>fizzNumber</code>, signaling that it will correspond to the value where we print "Fizz". <span class="comment">(If we were doing some sort of metaprogramming, we could harness this information too. We'll get back to that...)</span></p>
 <p>By packaging the <code>number</code> and <code>term</code> entities into one object (called <code>marker</code> for a lack of a better word), we can create a function that's more straightforward to use, taking an array of markers as parameter:</p>
 
 <pre><code data-language="javascript">function fizzBuzz(length, markers){
@@ -300,26 +302,742 @@ Signs of Sophistication (#6-7)
 
 <header>
 <h2 id="reflection">
-Dead-end: reflection (#8-9)</h2>
+Dead-end: Reflection (#8-9)</h2>
 <aside>
 <a href="#reflection">§</a>
 </aside>
 </header>
 
-<p>Javascript's dynamic nature allows a program to analyze its own structure. When you're referencing an object property by its name as a string (or whenever you use the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors#Bracket_notation">bracket notation</a>, in general), you're invoking a sort of <a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">reflection</a>.  To go further, a javascript program can inspect and change its very own source code too, enabling a form of <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming.</a> I'm going to explore this path in this chapter.</p>
+<p>Javascript's dynamic nature allows a program to analyze its own structure. When you're referencing an object property by its name as a string (or whenever you use the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors#Bracket_notation">bracket notation</a>, in general), you're already invoking a sort of <a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">reflection</a>.  To go further, a javascript program can inspect and change its very own source code too, enabling a form of <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming.</a> I'm going to explore this path in this chapter.</p>
 
-<div class="comment">Disclaimer: whenever you think this is the tool for your current job, think again. The ideas in this chapter are meant as interesting proof-of-concept fiddlings, showing off the language's capabilities rather than practices to be followed.</div>
+<div class="comment">Disclaimer: whenever you think this is the tool for your current job, think again. The ideas in this chapter are meant as interesting proof-of-concept fiddlings showing off the language's capabilities, rather than practices to be followed.</div>
 
-<p></p>
+<h3>#8: Semantic Parameter Names</h3>
+<p>We mentioned earlier how having a parameter named <code>fizzNumber</code> describes a somewhat implicit connection between the value of this parameter and the output string "Fizz". When we want to replace Fizz with Foo, we have to both change the Fizz string to Foo, AND rename the parameter to fooNumber - this redundancy is surely a code smell! Using some reflection trickery, we can make this connection automatically maintained!</p>
 
-<h2 id="functional">
-(5-6) FP</h2>
-By now, we've replaced a lot of the constants of the solution with paremeters. Yet, some aspects of the code (such as the fact that the outcome is decided by modulo operations) remained untouchable, seemingly inherent to the problem - but this needn't be the case.
+<p><span class="comment">Note: the redundancy is indeed a code smell, the very same one for which Clean Code advocates you don't name your collection <code>itemsArray</code> but simply <code>items</code>: there's no need for the variable name to hint at implementation details, which might end up misleading soon. Of course, this is not the path we're taking now.</span></p>
 
-We've parametrized every number of the original solution - this is a very natural progression of code, but 
+<p>The basic idea is the following: a function can access its own source code, which enables it to see both the value and the name of the parameter it was passed. Let's see how:</p>
+<pre><code data-language="javascript">function fizzBuzz(fizzNumber, buzzNumber, limit){
+	//named f to not break the layout - it should be called something like ownSourceCode
+	var f = fizzBuzz.toString();
+	//extracting an array of the function's parameter names:
+	var paramNames = f.slice( f.indexOf('(')+1, f.indexOf(')') ).split(',');
+	//let's also trim them, so our solution doesn't depend on code formatting style
+	paramNames = paramNames.map(function(name){return name.trim();});
+	//at this point, paramNames is ['fizzNumber','buzzNumber','limit'];
+
+	var firstMarker = {
+		value: eval(paramNames[0]),
+		displayString: paramNames[0].toLowerCase().replace('number','')
+	};
+	var secondMarker = {
+		value: eval(paramNames[1]),
+		displayString: paramNames[1].toLowerCase().replace('number','')
+	};
+
+	for(var i=1;i<=limit;i++){
+		var output = '';
+		if(i%firstMarker.value === 0){
+			output += firstMarker.displayString;
+		}
+		if(i%secondMarker.value === 0){
+			output += secondMarker.displayString;
+		}
+		if(output === '') {
+			output += i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+<p>If we want to play the FooBar game instead of FizzBuzz, we can just change the names of the parameters of this function too <code>fooNumber</code> and <code>barNumber</code>. Crazy, huh?</p>
+
+<p>The usefulness of this is questionable: a user of this function cannot specify the desired behaviour, only the developer in control of the source code can. This, too, can be solved.</p>
+
+<h3>#9: A Function Modifying Itself</h3>
+<p>To get around the limitation posed a few lines above, we can easily imbue our previous function with methods that change the names of the parameters, enabling the user of the function to specify the behaviour.</p>
+
+<p>Let's start with a separate function modifying our original function's code. We start off the same way, extracting an array of params we can modify, then we slice out the function body which we pass to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function constructor</a>:</p>
+<pre><code data-language="javascript">fizzBuzz.setFirstMarker = function(markerString){
+	var f = fizzBuzz.toString();
+	var paramNames = f.slice( f.indexOf('(')+1, f.indexOf(')') ).split(',');
+	paramNames = paramNames.map(function(name){return name.trim();});
+	//replace the first parameter's name
+	paramNames[0]=markerString+'Number';
+	//slice out the function body from the string representation
+	var functionBody = f.slice( f.indexOf('{')+1, f.length-1 );
+	//create a new function with the modified param list and body
+	fizzBuzz = Function(paramNames.join(','),functionBody);
+}
+</pre></code>
+<p>Almost there - as it is, this method only works on the first invocation, as the redefined fizzBuzz function doesn't have this very method defined on it anymore.</p>
+<p>To make it truly an object rewriting itself, with two extra lines we can save a reference to this function, and re-attach it to the newly constructed fizzBuzz:</p>
+<pre><code data-language="javascript">fizzBuzz.setFirstMarker = function(markerString){
+	var f = fizzBuzz.toString();
+	var paramNames = f.slice( f.indexOf('(')+1, f.indexOf(')') ).split(',');
+	paramNames = paramNames.map(function(name){return name.trim();});
+	paramNames[0]=markerString+'Number';
+	var functionBody = f.slice( f.indexOf('{')+1, f.length-1 );
+	var self = fizzBuzz.setFirstMarker; //&lt;-- line added
+	fizzBuzz = Function(paramNames.join(','),functionBody);
+	fizzBuzz.setFirstMarker = self; //&lt;-- line added
+}
+</pre></code>
+<p>Now we can set the string to be printed any number of times before running fizzbuzz: <span class="comment">(some assembly required)</span>: <code>fizzBuzz.setFirstMarker('Foo'); fizzBuzz(3,5,100);</code>.</p>
+
+<p>Alas, now we have a function named <code>fizzBuzz</code> outputting foo and buzz! Resolving this discrepancy based on this chapter is left as an exercise for the reader.</p>
+
+<p>Enough about these shenanigans, soon we'll look at proper ways to dynamically construct our functions.</p>
+
+<header>
+<h2 id="functional_programming">
+Functional Programming (#10-12)
+</h2>
+<aside>
+<a href="#functional_programming">§</a>
+</aside>
+</header>
+
+<h3>#10: Functions as Parameters </h3>
+<p>By now, we've replaced a lot of the constants of the problem with parameters. Yet, some aspects of the code (such as the fact that the outcome is decided by modulo operations) remained untouchable, seemingly inherent to the problem - but this needn't be the case.</p>
+
+<p>In Javascript, functions are <a href="https://en.wikipedia.org/wiki/First-class_citizen">first-class citizens</a>, which means the generalization can be easily continued by specifying the operation that determines whether we print the number or some special string instead.</p>
+
+<p>We can easily pass a function reference to this function:</p>
+<pre><code data-language="javascript">function fizzBuzz(operation){
+	var output;
+	for(var i=1;i<=100;i++){
+		output = '';
+		if(operation(i,3) === 0){
+			output+='Fizz';
+		} 
+		if(operation(i,5) === 0){
+			output+='Buzz';
+		} 
+		if(output === '') {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+<p>A small problem is that our original operation, modulo, is so fundamental that it has it's own operator, which we need to wrap in a function before we can use our newest solution:</p>
+<pre><code data-language="javascript">function modulo(dividend, divisor){
+	return dividend%divisor;
+}
+</code></pre>
+<p>Now we can expect the usual output when calling <code>fizzBuzz(modulo);</code></p>
+
+<p>Of course, if we insist, we can create a solution which doesn't require wrapping <code>%</code> into a new function...</p>
+<h3>#11: Accepting Basic Operators</h3>
+<div class="comment">Disclaimer: this solution belongs to the same dead-end we explored before, and it carries the same caveats. Please don't do this.</div>
+<p>Using the evil <code>eval</code>, we can pass any two-operand operators (such as <code>%,+,-</code>, or even logical operators like <code>||,&&</code>) themselves as parameters, almost verbatim. Given the selected operator, we can construct a string which, when evaled, will output the desired result without the need to construct additional functions. <span class="comment">(Did I mention yet you shouldn't do this?)</span></p>
+<pre><code data-language="javascript">function fizzBuzz(operator){
+	var output;
+	for(var i=1;i<=100;i++){
+		output = '';
+		if(eval(i+operator+3) === 0){
+			output+='Fizz';
+		} 
+		if(eval(i+operator+5) === 0){
+			output+='Buzz';
+		} 
+		if(output === '') {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+<p>You can call this construct simply like this: <code>fizzBuzz('%');</code>. <span class="comment">We do need to wrap the operator in quotation marks to get a string, but it's not like this is the only problem with this approach... </span>
+</p>
+
+<h3>#12: Predicates</h3>
+<p>A practical problem with the previous two solutions is the fact that the return values of the operations were still always compared to zero. This, for example, made using any sort of addition useless <span class="comment">(staying with the set of natural numbers for now)</span>. 
+
+<p>It seems like these check conditions should be parametrized too - but learning from our previous mistakes, it also seems clear that for high cohesion, these should not be separated from the operations themselves.</p>
+
+<p>We should encompass the entire ruleset for determining whether a special value is printed in functions containing both the operation and the decision condition. These predicate functons returning boolean values will be a very useful first step in giving elegant functional solutions to our problem.</p>
+
+<p>Writing our familiar modulo function with this in mind:</p>
+<pre><code data-language="javascript">function modulo(dividend, divisor){
+	return (dividend%divisor === 0);
+}
+</code></pre>
+<p>enables us to simplify the main logic:</p>
+<pre><code data-language="javascript">function fizzBuzz(predicate){
+	var output;
+	for(var i=1;i<=100;i++){
+		output = '';
+		if( predicate(i,3) ){
+			output+='Fizz';
+		} 
+		if( predicate(i,5) ){
+			output+='Buzz';
+		} 
+		if(output === '') {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+<p>The benefits of this approach will be more apparent later.</p>
+
+<header>
+<h2 id="array_methods">
+Array methods (#13-15)
+</h2>
+<aside>
+<a href="#array_methods">§</a>
+</aside>
+</header>
+
+<p>Before we delve into using array methods, it would be really neat if every collection in our problem domain was an array. For example, the number range our loop is iterating through can be trivially constructed as an array:</p>
+<pre><code data-language="javascript">var range = [];
+for(var i=1;i<=length;i++){
+	range.push(i);
+}</code></pre>
+<p>Using this array will enable us to formulate our solution in statements more closely resembling first-order logic.</p>
+<div class="comment">Creating the array of numbers in a for loop is the most straightforward solution. If you tried using the Array constructor (<code>new Array(100)</code>), you'd find that calling array functions such as <code>forEach</code> or <code>map</code> on this array will run exactly 0 times, skipping the non-initialized key values.
+To get an array with a 100 initialized, albeit still undefined values, you can use ES6's new <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/fill"><code>fill()</code></a> method of the Array prototype:
+<pre><code data-language="javascript">new Array(100).fill(undefined); //currently Firefox only!</code></pre>
+<p>Interestingly enough, although every value is still undefined, array functions can be applied properly to this new array.</p>
+<p>An ES5-compatible one-liner for the same task is the following:</p>
+<pre><code data-language="javascript">Array.apply(null, {length: 100})</code></pre>
+<p>See a nice explanation of the workings of this "hack" <a href="http://stackoverflow.com/questions/18947892/creating-range-in-javascript-strange-syntax/18949651#18949651">here on stackoverflow</a>. The very fact that this line of code requires a 2 page explanation should be enough reason not to ever use it in production code.</p></div>
+
+<h3>#13: Using forEach</h3>
+
+<p>The first array method we tackle is <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach">forEach</a>.</p>
+<p>It's mostly trivial to transform one of our early solutions (say, #5) into one using forEach: </p>
+<pre><code data-language="javascript">function fizzBuzz(length, fizzNumber, buzzNumber){
+	var range = [];
+	for(var i=1;i<=length;i++){ range.push(i); }
+	var output;
+	range.forEach(function(i){
+		output = '';
+		if(i%fizzNumber === 0){
+			output+='Fizz';
+		} 
+		if(i%buzzNumber === 0){
+			output+='Buzz';
+		} 
+		if(i%fizzNumber !== 0 && i%buzzNumber !== 0) {
+			output+=i;
+		}
+		print(output);
+	});
+}</code></pre>
+<p>Note that the callback in <code>forEach</code> also receives the current index as a second parameter. In case we use one of the above mentioned alternative methods to generate the range array, the current number might be represented not by the value but the index of the current element. In that case we can just replace the callback function's first line with <code>function(_,i)</code> <span class="comment">(_ signaling an unused parameter in this case)</span>.</p>
+<p>Regardless, this solution doesn't yet showcase much elegance we expect from a functional solution. We aimed at replacing every collection in our solutions with arrays, and earlier we already gave a solution representing the "fizz" and "buzz" markers and their conditions as collections themselves. Let's create a version of solution #7 using <code>forEach</code>:</p>
+
+<pre><code data-language="javascript">function fizzBuzz(length, markers){
+	var range = [];
+	for(var i=1;i<=length;i++){ range.push(i); }
+	var output;
+	range.forEach(function(i){
+		output = '';
+		markers.forEach(function(marker){
+			if(i%marker.number === 0){
+				output+=marker.term;
+			}
+		});
+		if(output === '') {
+			output+=i;
+		}
+		print(output);
+	});
+}
+</code></pre>
+<h3>#14: Using map</h3>
+<p>We can achieve a better separation of concerns than our last solution, printing inside our forEach is a sort of side effect which muddles the responsibilities of the sections of our code. Using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">Array.prototype.map()</a>, we can use a separate statement to extract the values, and an entirely different statement to print the results.</p>
+<pre><code data-language="javascript">function fizzBuzz(length, markers){
+	var range = [];
+	for(var i=1;i<=length;i++){ range.push(i); }
+	var output;
+	var outputs = range.map(function(i){
+		output = '';
+		markers.forEach(function(marker){
+			if(i%marker.number === 0){
+				output+=marker.term;
+			}
+		});
+		if(output === '') {
+			output+=i;
+		}
+		return output;
+	});
+	print( outputs.join('\n') );
+}
+</code></pre>
+<p>Instead of using <code>join()</code> we can also make our print function accept an array argument, or use an additional array method to print every output string:</p>
+<pre><code data-language="javascript">	outputs.forEach(function(output){
+		print(output);
+	});
+</code></pre>
+<p>The true benefit of this approach is that we've created a sort of processing pipeline, where every input and output is a collection of the same type (an array in this case), which allows very flexible composition.</p>
+<p>For example we could add a filter (an array to array transformation) between any two operations, or chain the commands without creating variables just to store intermediate values:</p>
+<pre><code data-language="javascript">function fizzBuzz(length, markers){
+	var range = [];
+	for(var i=1;i<=length;i++){ range.push(i); }
+	var output, number, term;
+	range.map(function(i){
+		output = '';
+		markers.forEach(function(marker){
+			if(i%marker.number === 0){
+				output+=marker.term;
+			}
+		});
+		if(output === '') {
+			output+=i;
+		}
+		return output;
+	}).forEach(function(output){
+		print(output);
+	});
+}
+</code></pre>
+
+<h3>#15: Using reduce</h3>
+<p>Usually we can achieve the same result using any of the basic array methods, applying only slightly different transformations to our code. Picking the methods with the most appropriate semantics is a great service to our codebase. It increases both the readability, maintainability and composability of our code, we don't have to manually do the transformations that an other array method would include by default.</p>
+<p>For example, when we want to create a single aggregate value representing an array (often at the end of a processing chain), the correct method to pick is <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce">reduce()</a>.</p>
+<p>There's one part of our algorithm that naturally lends itself to this transformation: the construction of the <code>output</code> variable inside our <code>forEach</code> of the above solution, as at the end of the block, we end up with a single output value.</p>
+<pre><code data-language="javascript">function fizzBuzz(length, markers){
+	var range = [];
+	for(var i=1;i<=length;i++){ range.push(i); }
+	var output;
+	range.map(function(i){
+		output = markers.reduce(function(output,marker){
+			if(i%marker.number === 0){
+				output+=marker.term;
+			}
+			return output;
+		},'');
+		if(output === '') {
+			output+=i;
+		}
+		return output;
+	}).forEach(function(output){
+		print(output);
+	});
+}
+</code></pre>
+<p><span class="comment">(We could also replace the map operation with a reduction to an other array, but the manual aggregation required to build this array would be just an other code smell that hints that map is the semantically correct method to use there - besides the fact that we want to create a 1-to-1 correspondence between the incoming and outgoing arrays.)</span></p>
+
+<p>At this point, my only issue is that pesky last step of outputting the number if no matching marker was found, which is a stain of manual, imperative operation on this otherwise nice and functional solution. To solve this, we can just omit that part, then add an other mapping to the pipeline which replaces the empty strings with their indices: <span class="comment">(actually, index+1 as it's 0-based)</span></p>
+<pre><code data-language="javascript">function fizzBuzz(length, markers){
+	var range = [];
+	for(var i=1;i<=length;i++){ range.push(i); }
+	//note the eliminated need for a top-level output variable;
+	range.map(function(i){
+		return markers.reduce(function(output,marker){
+			if(i%marker.number === 0){
+				output+=marker.term;
+			}
+			return output;
+		},'');
+	})
+	.map(function(output, index){
+		return output == ''? (index+1) : output;
+	})
+	.forEach(function(output){
+		print(output);
+	});
+}
+</code></pre>
+<p>This is probably one of the nicer solutions you'll find in this article.</p>
+
+<header>
+<h2 id="constructing_functions">
+Constructing Functions (#16-17)</h2>
+<aside>
+<a href="#constructing_functions">§</a>
+</aside>
+</header>
+
+<h3>#16: Private Properties</h3>
+<p>Earlier we had some passing thoughts of making the function have some mutable properties describing its behaviour instead of taking parameters. Here we revisit the idea with the proper techniques, using a more object-oriented approach.</p>
+<p>Just like in the last chapter, we'll be using the fact that functions are first-class citizens of the language: we can create functions which return other functions.</p>
+<p>Functions can also be assigned properties like regular objects. This allows us to create a function object which is both callable and has methods on it - in our case, methods to manipulate the function's behaviour with the use of private properties.</p>
+<p>Modifying some of our earlier solutions with this pattern is pretty straightforward, we just turn the parameters our original function requested into variables internal to the creator function: <span class="comment">(I'm vary of using the word constructor)</span></p>
+<pre><code data-language="javascript">function createFizzBuzz(){
+  var fizzNum = 3;
+  var buzzNum = 5;
+  var length = 100;
+  
+  var fizzBuzz = function(){
+    //... any of our solutions from above
+  }
+  
+  fizzBuzz.setFizzNum = function(newVal){
+	fizzNum = newVal; 
+  }
+  fizzBuzz.setBuzzNum = function(newVal){
+	buzzNum = newVal; 
+  }
+  
+  return fizzBuzz;
+}
+</code></pre>
+<p>Now we can create a new instance of a fizzbuzz function with <code>var fizzBuzz = createFizzBuzz()</code>, and either call it without any parameters for the expected default output, or use the <code>setFizzNum</code> and <code>setBuzzNum</code> methods to change its behaviour.</p>
+<p>The fizzNum and buzzNum variables are effectively private to this function (captured in closures for the created function and the setter methods), and we cannot get a reference to them from the outside.</p>
+<p>Let's apply this approach to one uf our more complicated solutions from earlier, like the fully functional creation in #15. We can maintain a private array of markers, and provide methods for setting them - for simplicity's sake, I'll only give examples to a push and a get method:</p>
+<pre><code data-language="javascript">function createFizzBuzz(){
+  var markers = [{number: 3, term: 'Fizz'}, {number: 5, term: 'Buzz'}];
+  var length = 100;
+  
+  var fizzBuzz = function(){
+	var range = [];
+	for(var i=1;i<=length;i++){ range.push(i); }
+	range.map(function(i){
+		return markers.reduce(function(output,marker){
+			if(i%marker.number === 0){
+				output+=marker.term;
+			}
+			return output;
+		},'');
+	})
+	.map(function(output, index){
+		return output == ''? (index+1) : output;
+	})
+	.forEach(function(output){
+		print(output);
+	});
+  }
+  
+  fizzBuzz.getMarkers = function(){
+	return markers;
+  }
+  
+  fizzBuzz.addMarker = function(marker){
+	markers.push(marker);
+  }
+
+  return fizzBuzz;
+}
+</code></pre>
+<p>Now you can add a new marker after creating a fizzBuzz function, like this: <code>fizzBuzz.addMarker({number: 4, term: 'Bang'})</code>. There's a subtle issue with this solution, caught by the trained eye: we're returning a reference to a mutable private field, making it effectively not private!</p>
+<p>This problem wasn't present in our previous solution, because our internal variables were primitive types, which a getter would have just copied, but an array is just passed by reference. This means that any modifications applied via the reference acquired this way will take effect on the fizzBuzz function operating on the same object. (Try: <code>var markers = fizzBuzz.getMarkers(); markers.splice(0,2); fizzBuzz();</code>)</p>
+<p>To get around this, we can return a deep-copy of the private variable, breaking the link between the value returned and the internal array:</p>
+<pre><code data-language="javascript">fizzBuzz.getMarkers = function(){
+	return JSON.parse(JSON.stringify(markers));
+}
+</code></pre>
+<p><span class="comment">(Hopefully you're using a library which provides nicer ways of deep copying an object, but the approach above is a surprisingly reliable and common way of doing this in vanilla js - at least until we have ubiquitous support for <code><a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign">Object.assign()</a></code>.)</span></p>
+
+<div class="comment">Immutability can be a very beneficial trait of a program (especially employing the functional approaches described above), but also the subject of an entirely different article. If the topic piques your interest, check out libraries adding immutability to Javascript such as Facebook's <a href="https://facebook.github.io/immutable-js/">ImmutableJS</a>, or the slightly more pragmatic <a href="https://github.com/rtfeldman/seamless-immutable">seamless-immutable</a>, or any of the numerous articles and discussions on the benefits of it.</div>
+
+<h3>#17: Using the Builder Pattern</h3>
+<p>Above we've created a function that behaves differently at different points in its life. Even using the same instance, we cannot be sure that invoking it twice with the same data will yield the same result. This is unusual, impractical and I'm not sure I'd like to work on any codebases employing such shenanigans.</p>
+<p>Still, allowing the configuration of a function without modifying its source seems like a useful tool. Using the <a href="https://en.wikipedia.org/wiki/Builder_pattern">builder pattern</a> we can split the life-cycle of this object into two: a configuration phase and a "runtime" phase where the behaviour of the function has been finalized. Ideally, we shouldn't even allow the main operation until the transition to this second stage is made explicit.</p>
+<p>Of course, if the function is not callable until we've ended the configuration phase, it doesn't make much sense to deal with the same object between the two stages, nor to even keep returning a function at all in the configuration phase, a plain object will do.</p>
+<p>Practically, we're just splitting the creation of a function into several optional steps (which also makes this a handy way of dealing with default values). Here's one way we could go about this:</p>
+<pre><code data-language="javascript">var FizzBuzzBuilder = function() {
+  var fizzNumber = 3;
+  var buzzNumber = 5;
+  var length = 100;
+  
+  var fizzBuzz = function(){
+    //fizzBuzz logic capturing the private variables in a closure
+  };
+  
+  this.setFizzNumber = function(number) {
+      fizzNumber = number;
+      return this;
+  };
+  this.setBuzzNumber = function(number) {
+      buzzNumber = number; 
+      return this;
+  };
+  this.finalize = function() {
+    return fizzBuzz;
+  };
+};
+</code></pre>
+<p>To make the difference between private and public fields more clear, I've opted for a newable constructor function this time. Properties of <code>this</code> will be public to the outside world, and the public methods will access the private fields (such as the eventual fizzBuzz function itself) via closure.</p>
+<p>We can use it like this:</p>
+<pre><code data-language="javascript">var builder = new FizzBuzzBuilder();
+var fizzBuzz = builder.setFizzNumber(2).setBuzzNumber(4).finalize();
+fizzBuzz();
+</code></pre>
+
+<p>There's still a glaring problem with this solution - if we saved a reference to the builder object, we can still change the function's behaviour after calling <code>finalize()</code>, because the setter methods of the builder capture the same variables in their closures as the function does.</p>
+<p>We can make the builder single-use for example by implementing some flag whether the function has been finalized yet, or we can even remove the setter properties upon finalizing. However, it would probably be better if we could use the finalize method to create new - truly finalized - function instances with the current configuration of the builder!</p>
+<p>To do this, we can create an additional closure inside the finalize method, via an <a href="https://en.wikipedia.org/wiki/Immediately-invoked_function_expression">IIFE</a> returning the fizzBuzz function, capturing the current values of the private fields at the time of finalizing.</p>
+<p>I'll show an example to this method using a simpler fizzBuzz solution, using only primitive private values, which are easier to capture (if we used reference types, like the markers array, we would need to employ some copy mechanism).</p>
+<pre><code data-language="javascript">var FizzBuzzBuilder = function() {
+  var fizzNumber = 3;
+  var buzzNumber = 5;
+  var length = 100; 
+    
+  this.setFizzNumber = function(number) {
+      fizzNumber = number;
+      return this;
+  };
+  this.setBuzzNumber = function(number) {
+      buzzNumber = number;
+      return this;
+  };
+  this.setLength = function(number) {
+      length = number; 
+      return this;
+  };
+  this.finalize = function() {
+    return (function(length,fizzNumber,buzzNumber){
+		return function fizzBuzz(){
+		var output;
+		for(var i=1;i<=length;i++){
+			output = '';
+			if(i%fizzNumber === 0){
+				output+='Fizz';
+			} 
+			if(i%buzzNumber === 0){
+				output+='Buzz';
+			} 
+			if(i%fizzNumber !== 0 && i%buzzNumber !== 0) {
+				output+=i;
+			}
+			print(output);
+		}
+	  }
+	})(length,fizzNumber,buzzNumber);
+  };
+};
+</code></pre>
+<p>Using this solution, the behaviour of the finalized functions can't be changed anymore via the original builder, just try:</p>
+<pre><code data-language="javascript">var builder = new FizzBuzzBuilder();
+var f1 = builder.setLength(5).finalize();
+var f2 = builder.setLength(10).finalize();
+f1(); // -> will print 5 lines
+</code></pre>
+
+<p><div class="comment">Some might point out a small issue with the code above: for every instance of FizzBuzzBuilder, we're creating 4 new functions, even though it feels like this functionality could be shared by instances. A usual solution to this issue is putting the methods on the prototype, but in our weird use-case (i.e. extending a callable object with function properties), this is the price we have to pay for this functionality, as creating a callable object with a custom prototype is practically impossible. (And we sure don't want to put our fizzBuzz-specific methods on the global Function prototype!)</div></p>
+
+<header>
+<h2 id="ecmascript6">
+ECMAScript 6 (#18)</h2>
+<aside>
+<a href="#ecmascript6">§</a>
+</aside>
+</header>
+<p>According to a March ruling by the ECMAScript Committee, no new article or blog post can be made on javascript without mentioning ECMAScript 6 (ECMAScript 2015) features.</p>
+
+<p>In this section we try to shoehorn in some applicable features.</p>
+
+<div class="comment"><h2>Note:</h2> at the time of writing this post, most of the techniques described here are not yet supported by default in Chrome. To run this code sample, you should open this post in Firefox <span class="comment">(don't forget that the samples here use the redefined `print` command, so you don't want to paste the snippets without either loading this page or manually reverting to console.log!)</span>, or use a polyfilled solution generated by <a href="https://babeljs.io/">BabelJS</a>, which I will also include.</div>
+
+<h3>#18: Default parameters</h3>
+<p>After solution #5 I left the topic of default parameter values to the reader, but it's worth noting now how ECMAScript 6 introduces a handy <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters">feature</a> for this purpose.</p>
+
+<p>The new syntax calls for assigning the default values of params in the standard parameter list. These defaults will take effect when an undefined value is passed at the given position. Using default params, solution #5 would look like this:</p>
+<pre><code data-language="javascript">function fizzBuzz(length=100, fizzNumber=3, buzzNumber=5){
+	var output;
+	for(var i=1;i<=length;i++){
+		output = '';
+		if(i%fizzNumber === 0){
+			output+='Fizz';
+		} 
+		if(i%buzzNumber === 0){
+			output+='Buzz';
+		} 
+		if(i%fizzNumber !== 0 && i%buzzNumber !== 0) {
+			output+=i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+
+<p>Sadly, Chrome does not support these features yet, but we can get a backwards-compatible version if we run this sample through <a href="https://babeljs.io/repl/">Babel's online transpiling tool.</a> The result is this:</p>
+
+<pre><code data-language="javascript">'use strict';
+
+function fizzBuzz() {
+	var length = arguments.length <= 0 || arguments[0] === undefined ? 100 : arguments[0];
+	var fizzNumber = arguments.length <= 1 || arguments[1] === undefined ? 3 : arguments[1];
+	var buzzNumber = arguments.length <= 2 || arguments[2] === undefined ? 5 : arguments[2];
+
+	var output;
+	for (var i = 1; i <= length; i++) {
+		output = '';
+		if (i % fizzNumber === 0) {
+			output += 'Fizz';
+		}
+		if (i % buzzNumber === 0) {
+			output += 'Buzz';
+		}
+		if (i % fizzNumber !== 0 && i % buzzNumber !== 0) {
+			output += i;
+		}
+		print(output);
+	}
+}
+</code></pre>
+<p>As you see, the conversion is pretty straightforward in this case. A difference to note compared to the naive solution I posted for the same task at the end of solution #5 is that</p>
+<pre><code data-language="javascript">var param = paramValue || defaultValue;</code></pre><p> will replace any falsy value (such as 0) with a default, while here we only want to replace truly undefined values.</p>
+
+<div class="comment">Seeing that naive undefined check makes me doubt whether this code provided by Babel is truly equivalent to the default parameter syntax of the new standard.
+<p>Note that <code>arguments[0] === undefined</code> is susceptible to the old JS pitfall of overriding the value of undefined. I would be surprised if the ES6 implementations didn't cover this edge case with a more robust check, something along the lines of <code>typeof arguments[0] === 'undefined'</code>.</p>
+<p>In fact, it turns out that Firefox 39's current default param implementation does differ in this behaviour from the code transpiled by Babel, you can easily check for yourself: adding <code>var undefined=2;</code> to our code will make the outputs different when we issue a command like <code>fizzBuzz(100,2)</code>: FF correctly detects that <code>2</code> is not the special value <code>undefined</code>.</p>
+<p>This is a silly edge-case, but I submitted a <a href="https://github.com/babel/babel/issues/2037">bug report</a> of it to Babel regardless.</p>
+</div>
+
+<header>
+<h2 id="pattern_matching">
+Pattern Matching (#19-20)</h2>
+<aside>
+<a href="#pattern_matching">§</a>
+</aside>
+</header>
+
+<p>As a closing note, I'll backtrack a bit and try a fundamentally different approach: trying to rely on some recurring patterns of the problem, first hard-coded into the solution, then implementing a naive algorithm for recognizing these patterns in the general case.</p>
+
+<p><span class="comment">I surely disappointed some readers with the title: alas, this chapter is not about pattern matching syntax in the language. Currently Javascript doesn't have much going on in that area, although ES6 does bring some basic <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment">destructuring</a> - with hopefully full-fledged pattern matching somewhere along the ECMAScript roadmap.</span></p>
+
+<h3>#19: Programmer-Supplied Pattern</h3>
+
+<p>Even if we twist the challenge a bit, as long as we're dealing with modulo operations, the output will be strictly periodic. In the case of the original assignment, this period is 15 <span class="comment">(because 3 and 5 are relative primes to each other)</span>.</p>
+
+<p>That means we can determine the output for an arbitrary index just by knowing the index's position within the period - it's not entirely accidental that this leads us back to modulo operations again.</p>
+
+<p>Let's create an array of transformations representing this period, where each item corresponds to the transformation that we have to apply at the current index. The index of the needed transformation will be easily determined by taking <code>numberIndex%periodLength</code>, leaving us with a transformation array like this:</p>
+<pre><code data-language="javascript">var transformations = [
+	fizzBuzzify, //0 - corresponds to 15
+	identity,    //1
+	identity,    //2
+	fizzify,     //3
+	identity,    //4
+	buzzify,     //5
+	fizzify,     //...
+	identity,
+	identity,
+	fizzify,
+	buzzify,
+	identity,
+	fizzify,
+	identity,
+	identity
+];
+</code></pre>
+<p>Where the elements are references to the following basic functions:</p>
+<pre><code data-language="javascript">var identity = function(n){
+	return n;
+}
+var fizzify = function(n){
+	return 'Fizz';
+}
+var buzzify = function(n){
+	return 'Buzz';
+}
+var fizzBuzzify = function(n){
+	return 'FizzBuzz';
+}
+</code></pre>
+<p>Given this structure, the printing logic is reduced to a single line:</p>
+<pre><code data-language="javascript">for(var i=1;i<=100;i++){
+	print( transformations[i%transformations.length](i) );
+}
+</code></pre>
+<p>While the brevity and declarative nature of this final line is neat, this solution feels a bit brutish - after all, we had to manually find out and type up the pattern, which obviously limits the usefulness of our program.</p>
+<p> It would be a much nicer challenge to automatically extract these patterns from a sample - of course, this will require a very different input. Up next.</p>
+
+<h3>#20: Recognizing Patterns</h3>
+
+<p>I will create a function which is able to parse an existing FizzBuzz list (which can be the output of any of our previous solutions), recognize the rules governing it, and be able to extend it indefinitely.</p>
+<p>This does not sound like a usability dream, but maybe in some cases, it is actually easier to type out the first few outputs of the desired pattern, and let the function figure out the periodicity. As a final test case, I'd like to invoke the function as such:</p>
+<pre><code data-language="javascript">fizzBuzz([1,2,'Fizz',4,'Buzz'],100);
+</code></pre>
+<p>and receive the same 100-length output as any of our previous solutions.</p>
+
+<p>Finding which numbers were replaced by special values in the sequence is trivial. For brevity's sake, let us now assume that the special output strings will always follow a PascalCase naming convention, which makes it easier to extract all the different strings used:</p>
+
+<pre><code data-language="javascript">  var markers = {};
+  sampleOutputs.forEach(function(element, i){
+    if(isNaN( Number(element) )){
+      var parts = element.split(/(?=[A-Z])/);
+      console.log('parts:',parts);
+      parts.forEach(function(part){
+        if(!markers[part]){
+          markers[part] = [];
+        }
+        markers[part].push(i+1);
+      });
+    }
+  });
+</code></pre>
+
+<p>This gives us an object where the keys are the possible output strings, and the values are the arrays of numbers where the rule associated with the output matched. In the simplistic example above this yields <code>{Fizz: [3], Buzz: [5]}</code></p>
+
+<p>If we assume the output is generated by rules involving a single modulo operation only, and we list numbers from 1, the task is pretty simple given this data structure: the first number of every array is the number by which the modulo check was carried out.</p>
+
+<p>However, I would prefer to create a more generalized solution, which can eventually be extended easily to support arbitrary intervals and rules besides modulo operations.</p>
+
+<p>What I have in mind is a sort of a brute-force solution: generating predicate functions, running them against the list of numbers equal in length to the sample input, and checking whether the resulting array of "hits" corresponds to any of the above extracted arrays. Hopefully this will also enable us to employ some nice functional concepts along the way. <span class="comment">(I'm not concerned about performance for now.)</span></p>
 
 
-<button onclick="elevator.elevate()">Back to top</button>
+<p>For a start, I'll transform this object above to an array, in order to be able to use some nice functional composition later on:</p>
+<pre><code data-language="javascript">for(key in markers){
+	if(markers.hasOwnProperty(key)){
+		markersArray.push({
+			marker: key,
+			matchingElements: markers[key]
+		});
+	}
+}
+</code></pre>
+
+<p>Then I define a simple function for generating the modulo predicates:</p>
+<pre><code data-language="javascript">function getPredicate(divisor){
+    return function(element){
+        return !(element%divisor);
+    }
+}
+</code></pre>
+
+<p>Using this function, we can create a simple algorithm for generating the outcomes for each predicate:</p>
+<pre><code data-language="javascript">function generatePossiblePatterns(length){
+	var generatedPatterns = [];
+	for(var i=1;i<=length;i++){
+		var predicate = getPredicate(i);
+		var interval = [];
+		for(var j=1;j<=length;j++){interval.push(j);}
+		var outcome = interval.filter(function(element){
+			 return predicate(element);
+		});
+		generatedPatterns.push(outcome);
+    }
+	return generatedPatterns;
+}
+</code></pre>
+<p>This system can be easily generalized past modulo operations: we can add any predicate function returning a boolean which will be used to filter the array of possible elements. However, for simplicity's sake I'll finish this solution relying on some assumptions about modulo-based predicates.</p>
+
+<p>At this point, all we have left is finding the matches between the extracted and the generated patterns. Disregarding error handling and complicated cases for now (i.e. assuming that some combination of our modulo predicates will match the provided pattern, and that every pattern will match only one predicate's output), we can do this with the following expression:</p>
+
+<pre><code data-language="javascript">extractedPatterns.map(function(ePattern){
+	return {
+		marker: ePattern.marker,
+		number: generatedPatterns.filter(function(gPattern){
+			return ePattern.matchingElements.every(function(element, index){
+				return gPattern[index] === element;
+			});
+		})[0][0]
+	}
+});
+</code></pre>
+<p>This will yield an array of objects that describe the rules governing our fizzBuzz pattern, in this case <code>[{marker: 'Fizz', number: 3},{marker: 'Buzz', number: 5}]</code>.</p>
+
+<p>Incidentally, this is the input format we used for some of our previous solutions, so we can use any of them to print the extrapolated FizzBuzz pattern. You can find this solution assembled into a <a href="https://gist.github.com/ditam/79ba8b882bfdaab4b53f">self-contained gist here</a>.</p>
+
+<p>Calling the assembled function like this <code>extrapolateFizzBuzz([1,2,'Fizz',4,'Buzz'], 100);</code> outputs the full fizzBuzz sequence, which fulfills our initial test case, and concludes the 20th solution and this article.</p>
+
+<p>
+<a href="#introduction">Jump back to top</a> or 
+<a href="#" id="elevatorBtnToTop">take the elevator</a>.
+</p>
+<div class="comment">Eventually I'll set up some way of leaving comments here, until then, feel free to contact me at ditam.github at gmail.com.</div>
+
 </article>
 </body>
 </html>
