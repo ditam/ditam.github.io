@@ -47,7 +47,7 @@ Table of Contents
 
 <p>This article will be exploring how an initial solution might evolve much beyond what's usually expected of it. Along the way I'll try to showcase several techniques applicable in Javascript, both the good and bad parts - eventually maybe even hints of elegance, intertwined with complete dead-ends that should not be followed by any means, but might prove to be interesting proof-of-concept solutions regardless.</p>
 
-<p>I'll try to explain the motivations behind most steps of transformation, trying to keep the discussion language-independent, but also pointing out some non-trivial parts of the Javascript language here and there. All in all, finding the balance between pacing and the details of explanations will be a big challenge, a thin line I'll surely veer from often, please bear with me.</p>
+<p>I'll try to explain the motivations behind most steps of transformation, trying to keep the discussion language-independent, but also pointing out some non-trivial workings of Javascript here and there. All in all, finding the balance between pacing and the details of explanations will be a big challenge for me, a thin line I'll surely veer from often, please bear with me.</p>
 
 <div class="comment"><h2>Setup:</h2>
 All the code samples in this post will assume the presence of a global <code>print</code> function, which I have defined as an alias for <code>console.log</code>:
@@ -66,7 +66,7 @@ Naive solutions (#1-5)
 </aside>
 </header>
 
-<p>For a start, let's see some run-of-the-mill solutions, what I assume the common answers are at those job interviews. If your time is too precious, and you've seen enough basic FizzBuzz implementations in your time, you can skip to the <a href="#signs_of_sophistication">next chapter</a>.</p>
+<p>For a start, let's see some run-of-the-mill solutions, what I assume the common answers are at those job interviews. If your time is too precious, and you've seen enough basic FizzBuzz implementations in your time, you might as well <a href="#signs_of_sophistication">skip to the next chapter</a>.</p>
 
 <h3>#1: Tongue-in-cheek</h3>
 <p>In true TDD fashion, if we need to output one particular string, we should do just that. YAGNI, KISS and all.</p>
@@ -180,7 +180,7 @@ This latter redundancy was already part of the original task description, but as
 	}
 }
 </code></pre>
-<p>In reality, modulo operations are not that expensive, and our FizzBuzz program won't have any performance criteria to meet - we fell into the familiar trap of <a href="http://c2.com/cgi/wiki?PrematureOptimization">premature optimization</a> (Who knew Donald Knuth would come up this often in a post about FizzBuzz?). This might already be a slight overkill for this task, but clearly, avoiding overkill is anything but the aim of this blogp ost.</p>
+<p>In reality, modulo operations are not that expensive, and our FizzBuzz program won't have any performance criteria to meet - we fell into the familiar trap of <a href="http://c2.com/cgi/wiki?PrematureOptimization">premature optimization</a> <span class="comment">(who knew Donald Knuth would come up this often in a post about FizzBuzz?)</span>. This might already be a slight overkill for this task, but clearly, avoiding overkill is anything but the aim of this write-up.</p>
 
 <h3>#5: parameters everywhere</h3>
 <p>If we presented any of the previous solutions at an interview, chances are the interviewer tried to throw us off our game by rephrasing the question in ways that make our implementation fail ("What if I want 150 numbers instead of 100?" or "What if I want multiples of 7 and 8?"). And until now, after every question we would have had to rewrite substantial parts of the code.</p>
