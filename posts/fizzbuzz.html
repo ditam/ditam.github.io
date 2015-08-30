@@ -974,7 +974,7 @@ var fizzBuzzify = function(n){
 
 <p>However, I would prefer to create a more generalized solution, which can eventually be extended easily to support arbitrary intervals and rules besides modulo operations.</p>
 
-<p>What I have in mind is a sort of a brute-force solution: generating predicate functions, running them against the list of numbers equal in length to the sample input, and checking whether the resulting array of "hits" corresponds to any of the above extracted arrays. Hopefully this will also enable us to employ some nice functional concepts along the way. <span class="comment">(I'm not concerned about performance for now.)</span></p>
+<p>What I have in mind is a sort of a brute-force solution: generating predicate functions, running them against the list of numbers equal in length to the sample input, and checking whether the resulting array of "hits" corresponds to any of the above extracted arrays. Hopefully this will also enable us to employ some functional concepts along the way. <span class="comment">(I'm not concerned about performance for now.)</span></p>
 
 
 <p>For a start, I'll transform this object above to an array, in order to be able to use some nice functional composition later on:</p>
