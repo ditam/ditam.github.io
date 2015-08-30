@@ -194,7 +194,7 @@ div.quote{
 	line-height: 1.1em;
 }
 
-div.quote:before{
+div.quote::before{
 	content: "“";
 	font-size: 3.5em;
 	font-family: initial;
