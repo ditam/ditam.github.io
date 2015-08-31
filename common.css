@@ -74,7 +74,8 @@ pre{
 	margin: 0.5em 0;
 	padding: 0.5em;
 	line-height: 1.2em;
-	background-color: #34495e
+	background-color: #34495e;
+	tab-size: 4;
 }
 code{
 	font-family: monospace;
