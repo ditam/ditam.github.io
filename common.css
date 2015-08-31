@@ -75,6 +75,7 @@ pre{
 	padding: 0.5em;
 	line-height: 1.2em;
 	background-color: #34495e;
+	-moz-tab-size: 4;
 	tab-size: 4;
 }
 code{
