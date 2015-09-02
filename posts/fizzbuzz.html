@@ -458,7 +458,7 @@ Functional Programming (#10-12)
 
 <p>It seems like these check conditions should be parametrized too - but learning from our previous mistakes, it also seems clear that for high cohesion, these should not be separated from the operations themselves.</p>
 
-<p>We should encompass the entire ruleset for determining whether a special value is printed in functions containing both the operation and the decision condition. These predicate functons returning boolean values will be a very useful first step in giving elegant functional solutions to our problem.</p>
+<p>We should encompass the entire ruleset for determining whether a special value is printed in functions containing both the operation and the decision condition. These predicate functions returning boolean values will be a very useful first step in giving elegant functional solutions to our problem.</p>
 
 <p>Writing our familiar modulo function with this in mind:</p>
 <pre><code data-language="javascript">function modulo(dividend, divisor){
