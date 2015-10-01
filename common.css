@@ -172,6 +172,10 @@ div.comment p{
 	margin-bottom: 0;
 }
 
+div.comment p:first-child{
+	margin-top: 0;
+}
+
 div.comment h2{
 	margin-top: 0;
 	margin-bottom: 0.5em;
