@@ -153,6 +153,10 @@ nav a:hover{
 	color: rgb(15, 52, 80);
 }
 
+li {
+    margin: 0.5em 0;
+}
+
 p{
 	margin: 1em 0;
 	line-height: 1.5em;
