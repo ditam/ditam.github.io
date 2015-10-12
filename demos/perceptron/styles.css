@@ -1,0 +1,20 @@
+body {
+    padding: 1em;
+}
+
+canvas {
+    border: 1px dashed gray;
+    border-radius: 5px;
+}
+
+.short-inline-form input {
+    width: 4em;
+    height: 1.8em;
+    display: inline;
+    position: absolute;
+    right: 0;
+}
+
+.panel-footer{
+    height: 4em;
+}

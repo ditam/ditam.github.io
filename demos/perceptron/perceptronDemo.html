@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script data-main="scripts/perceptronApp" src="scripts/require.js"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-3">
+            <canvas id="mainDisplay">Your browser does not support canvas :(.</canvas>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+              
+              <div class="panel-heading">Parameters</div>
+              
+              <div class="panel-body">
+                <div class="short-inline-form">
+                    <div class="col-sm-6">
+                        <div>
+                            <label for="randomSeedInput">random seed:</label>
+                            <input type="number" id="randomSeedInput" value="1" min="1">
+                        </div>
+                        <div>
+                            <label for="trailLengthInput">separator trail length:</label>
+                            <input type="number" id="trailLengthInput" value="5">
+                        </div>
+                        <div>
+                            <label for="runDelayInput">run delay (ms):</label>
+                            <input type="number" id="runDelayInput" value="200" min="1">
+                        </div>
+                        <div>
+                            <label for="cloudSizeInput">cloud size:</label>
+                            <input type="number" id="cloudSizeInput" value="20" min="1">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div>
+                            <label for="widthInput">base width:</label>
+                            <input type="number" id="widthInput" value="100" min="1">
+                        </div>
+                        <div>
+                            <label for="widthVarianceInput">width variance:</label>
+                            <input type="number" id="widthVarianceInput" value="100" min="1">
+                        </div>
+                        <div>
+                            <label for="heightInput">base height:</label>
+                            <input type="number" id="heightInput" value="100" min="1">
+                        </div>
+                        <div>
+                            <label for="heightVarianceInput">height variance:</label>
+                            <input type="number" id="heightVarianceInput" value="50" min="1">
+                        </div>
+                    </div>
+                </div>
+              </div>
+              
+              <div class="panel-footer">
+                    <div class="form-inline pull-left">
+                        <button id="resetButton" class="btn btn-warning">apply params</button>
+                    </div>
+                    <div class="form-inline pull-right">
+                        <button id="stepButton" class="btn btn-info">step</button>
+                        <button id="runButton" class="btn btn-primary">run</button>
+                    </div>
+                </div>
+              
+            </div>
+            <div class="panel panel-default">
+              
+              <div class="panel-heading">Current Classification</div>
+              
+              <div class="panel-body">
+                <table class="table" id="statisticsTable">
+                    <tr>
+                        <th>TP</th><th>FP</th><th>TN</th><th>FN</th><th>Precision</th><th>Recall</th><th>F1</th>
+                    </tr>
+                    <tr id="statisticsDataRow">
+                    </tr>
+                </table>
+                <div id="separatorDisplay"></div>
+              </div>
+              
+            </div>
+        </div>
+    </div>
+</body>
+</html>
