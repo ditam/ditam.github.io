@@ -145,6 +145,7 @@ nav ul{
 }
 nav ul li{
 	line-height: 1.3em;
+    margin: 0.25em 0;
 }
 nav a{
 	color: rgb(100,100,100);
