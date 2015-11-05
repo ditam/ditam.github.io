@@ -220,8 +220,10 @@ img{
 	display: block;
 	margin: auto;
 }
-.image-label{
-  color: rgb(144, 144, 144);
+img+span.caption{
+  color: rgb(84, 84, 84);
   text-align: center;
+  display: inherit;
   margin: 0.5em;
+  font-style: italic;
 }
