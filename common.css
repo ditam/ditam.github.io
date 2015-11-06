@@ -139,14 +139,7 @@ nav{
 	color: rgb(100,100,100);
 	font-family: 'Raleway', sans-serif;
 }
-nav ul{
-	list-style-position: inside;
-	list-style-type: square;
-}
-nav ul li{
-	line-height: 1.3em;
-    margin: 0.25em 0;
-}
+
 nav a{
 	color: rgb(100,100,100);
 }
@@ -154,6 +147,14 @@ nav a:hover{
 	color: rgb(15, 52, 80);
 }
 
+ul{
+	list-style-position: inside;
+	list-style-type: square;
+}
+ul li{
+	line-height: 1.3em;
+    margin: 0.25em 0;
+}
 #posts_index li {
     margin: 0.5em 0;
 }
