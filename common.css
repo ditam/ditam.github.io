@@ -163,7 +163,7 @@ p{
 	margin: 1em 0;
 	line-height: 1.5em;
 }
-p code, div>code{
+p code, div.comment code, ul code{
 	background-color: lightgray;
 }
 
