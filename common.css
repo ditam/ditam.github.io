@@ -176,6 +176,7 @@ div.comment{
 div.comment p{
 	margin-top: 1em;
 	margin-bottom: 0;
+    line-height: 1.2em;
 }
 
 div.comment p:first-child{
