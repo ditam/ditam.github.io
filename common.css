@@ -123,6 +123,19 @@ header aside a:hover{
 	color: gray;
 	color: rgb(8, 28, 48);
 }
+header aside .elevator-button{
+    position: absolute;
+    right: 20px;
+    font-size: 16px;
+    color: lightgray;
+}
+header aside .elevator-button:hover{
+    color: #34495E;
+    cursor: pointer;
+}
+.elevator-button.btn-down{
+    top: 12px;
+}
 header p{
 	margin-top: -1.3em;
 	font-size: 1.5em;
