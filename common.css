@@ -147,11 +147,16 @@ nav a:hover{
 	color: rgb(15, 52, 80);
 }
 
-ul{
+ol, ul{
 	list-style-position: inside;
+}
+ol{
+    list-style-type: decimal;
+}
+ul{
 	list-style-type: square;
 }
-ul li{
+ul li, ol li{
 	line-height: 1.3em;
     margin: 0.25em 0;
 }
