@@ -25,6 +25,11 @@ window.onload = function() {
     options.targetElement = document.querySelector('#the_fix');
     options.duration = 3000;
     new Elevator(options);
+
+    options.element = document.querySelector('#linkToTop');
+    delete options.targetElement;
+    options.duration = 5000;
+    new Elevator(options);
 }
 
 </script>
@@ -443,6 +448,8 @@ The Fix
 <p>You can see the fix (without any of the aesthetic patches) assembled into a pull request <a href="https://github.com/tholman/elevator.js/pull/99">here</a> - it has since been accepted and merged into master. It has been my first contribution to an open source project, and as such, it'll probably always have a special place in my heart.</p>
 
 <p>Hopefully this article managed to provide some additional insight into my thought process while analyzing foreign code, and provoke some thoughts way beyond the scope of the few lines' worth of augmented functionality. If I find the time, I'll try to make it a recurring segment of this blog where I look at some of my favourite open source projects.</p>
+
+<p><a href="#" id="linkToTop">Take the elevator</a> back to the top.</p>
 
 <div class="comment">As my next order of business, I'll be setting up some way of leaving comments here (probably via GitHub issue tickets), until then, feel free to contact me at ditam.github at gmail.com.</div>
 </article>
