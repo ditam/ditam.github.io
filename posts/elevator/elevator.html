@@ -6,30 +6,40 @@
 <script src="../../resources/rainbow/rainbow-custom.min.js"></script>
 <script src="elevator_modified.js"></script>
 <script>
-
 window.onload = function() {
     var options = {
         mainAudio: '../../resources/elevator/music.mp3',
         endAudio: '../../resources/elevator/ding.mp3'
     };
-    
-    options.element = document.querySelector('#p1_link');
-    options.targetElement = document.querySelector('#taking_it_apart');
-    new Elevator(options);
-    
-    options.element = document.querySelector('#p2_link');
-    options.targetElement = document.querySelector('#better_than_you_found_it');
-    new Elevator(options);
-    
-    options.element = document.querySelector('#p3_link');
-    options.targetElement = document.querySelector('#the_fix');
-    options.duration = 3000;
-    new Elevator(options);
 
-    options.element = document.querySelector('#linkToTop');
-    delete options.targetElement;
-    options.duration = 5000;
-    new Elevator(options);
+    function createElevator(buttonSelector, targetSelector, duration){
+        options.element = document.querySelector(buttonSelector);
+        if(targetSelector){
+            options.targetElement = document.querySelector(targetSelector);
+        } else {
+            delete options.targetElement;
+        }
+        if(duration){
+            options.duration = duration;
+        } else {
+            delete options.duration;
+        }
+        new Elevator(options);
+    }
+    
+    createElevator('#p1_link','#taking_it_apart');    
+    createElevator('#p2_link','#better_than_you_found_it');
+    createElevator('#p3_link','#the_fix',3000);
+    createElevator('#linkToTop',undefined,5000);
+    
+    createElevator('#p1_prev_btn',undefined,3000);
+    createElevator('#p1_next_btn','#better_than_you_found_it');
+    
+    createElevator('#p2_prev_btn','#taking_it_apart');
+    createElevator('#p2_next_btn','#the_fix',3000);
+    
+    createElevator('#p3_prev_btn','#better_than_you_found_it',3000);
+    createElevator('#p3_next_btn','#linkToTop');
 }
 
 </script>
@@ -62,6 +72,8 @@ Table of Contents
 Taking It Apart
 </h2>
 <aside>
+<span class="elevator-button btn-up" id="p1_prev_btn">▲</span>
+<span class="elevator-button btn-down" id="p1_next_btn">▼</span>
 <a href="#taking_it_apart">§</a>
 </aside>
 </header>
@@ -134,6 +146,8 @@ Taking It Apart
 Better Than You Found It
 </h2>
 <aside>
+<span class="elevator-button btn-up" id="p2_prev_btn">▲</span>
+<span class="elevator-button btn-down" id="p2_next_btn">▼</span>
 <a href="#better_than_you_found_it">§</a>
 </aside>
 </header>
@@ -358,6 +372,8 @@ Better Than You Found It
 The Fix
 </h2>
 <aside>
+<span class="elevator-button btn-up" id="p3_prev_btn">▲</span>
+<span class="elevator-button btn-down" id="p3_next_btn">▼</span>
 <a href="#the_fix">§</a>
 </aside>
 </header>
