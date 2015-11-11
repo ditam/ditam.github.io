@@ -456,12 +456,12 @@ The Fix
 
 <p>An initial value of 0 for endPosition will ensure backwards compatibility, in case a target is not specified.</p>
 
+<p>You can see the fix (without any of the aesthetic patches) assembled into a pull request <a href="https://github.com/tholman/elevator.js/pull/99">here</a> - it has since been accepted and merged into master. It has been my first contribution to an open source project, and as such, it'll probably always have a special place in my heart.</p>
+
 <div class="comment"><h2>Minor issues</h2><p>There's actually a slight problem with this solution, which I've only noticed after the pull request had been accepted (I like thinking this points to the low severity of the issue).</p>
 <p>Doing the position calculation in the <code>init</code> section makes the elevator disregard any document reflows that occur between initialization (usually at pageload) and the actual elevating. This can be an issue if the document is resized, or elements are repositioned due to content with dynamic size, potentially resulting in incorrect scroll positions.</p>
 <p>Additionally, if a custom duration was not specified, the default value used to be calculated based on the start position, as that always equaled the distance traveled. Once we have custom targets, this distance calculation also has to be updated.</p>
 <p>I've amended these issues by saving the element reference instead, and always recalculating its current position before elevating to it. At the time of publishing this article, this <a href="https://github.com/tholman/elevator.js/pull/103">correctional pull request</a> has not been accepted yet.</p></div>
-
-<p>You can see the fix (without any of the aesthetic patches) assembled into a pull request <a href="https://github.com/tholman/elevator.js/pull/99">here</a> - it has since been accepted and merged into master. It has been my first contribution to an open source project, and as such, it'll probably always have a special place in my heart.</p>
 
 <p>Hopefully this article managed to provide some additional insight into my thought process while analyzing foreign code, and provoke some thoughts way beyond the scope of the few lines' worth of augmented functionality. If I find the time, I'll try to make it a recurring segment of this blog where I look at some of my favourite open source projects.</p>
 
