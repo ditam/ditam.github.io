@@ -181,7 +181,7 @@ p{
 	margin: 1em 0;
 	line-height: 1.5em;
 }
-p code, div.comment code, ul code, ol code{
+p code, div.comment code:not(.rainbow), ul code, ol code{
 	background-color: lightgray;
 }
 
