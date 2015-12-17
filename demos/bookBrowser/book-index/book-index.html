@@ -1,0 +1,35 @@
+<div>
+    <div class="header-controls form-horizontal">
+        <div class="form-group">
+            <div class="col-md-8">
+                <span>Find me the best</span>
+                <div class="btn-group">
+                  <ui-select 
+                    ng-model="userSelection.category">
+                    <ui-select-match placeholder="[any category]">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="category in categories | filter: $select.search">
+                      <span ng-bind-html="category.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                  </ui-select>
+                </div>
+                
+                <span>books about</span>
+                <div class="btn-group">
+                  <ui-select 
+                    ng-model="userSelection.genre">
+                    <ui-select-match placeholder="[any genre]">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="genre in genres | filter: $select.search">
+                      <span ng-bind-html="genre.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                  </ui-select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <input type="search" results="0" ng-model="userSelection.search" class="form-control" placeholder="Search books">
+            </div>
+        </div>
+    </div>
+    <div class="book-list-area">
+        <book-display filters="userSelection" limit="6" paging="true"></book-display>
+    </div>
+</div>

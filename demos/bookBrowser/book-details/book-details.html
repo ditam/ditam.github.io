@@ -1,0 +1,29 @@
+<div id="book-details-container">
+    <div class="book-header">
+        <h1>{{book.name}}</h1>
+        <div class="book-author">By {{book.author.name}}</div>
+        <div class="book-description">{{book.description}}</div>
+        
+        <h2>Categories:</h2>
+        <div><a href="#/?category={{book.genre.category}}">{{book.genre.category}}</a>, <a href="#/?genre={{book.genre.name}}">{{book.genre.name}}</a></div>
+    </div>
+    
+    <div class="book-body">
+        <h1 class="text-muted">Introduction</h1>
+        <div class="introduction">
+            <p ng-repeat="paragraph in book.introduction">
+                {{paragraph.content}}
+            </p>
+        </div>
+        
+        <hr>
+        <img src="resources/avatar_placeholder.png" class="avatar">
+        <div class="signature">Written by {{book.author.name}}</div>
+    </div>
+    
+    <div class="recommendations">
+        <h1 class="centered">Similar reading</h1>
+        <h2 class="centered">If you liked this book, we recommend you check out these emerging titles.</h2>
+        <book-display filters="{ category: { searchValue: book.genre.category}, genre: {searchValue: book.genre.name}}" limit="3"></book-display>
+    </div>
+</div>
