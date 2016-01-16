@@ -247,3 +247,8 @@ img+span.caption{
   margin: 0.5em;
   font-style: italic;
 }
+
+.comments-section{
+  width: 100%;
+  min-height: 25em;
+}
