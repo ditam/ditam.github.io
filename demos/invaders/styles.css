@@ -1,0 +1,45 @@
+﻿
+body {
+  background-color: #474f61;
+}
+
+p {
+  color: white;
+  opacity: 0.3;
+  font-size: 16px;
+  font-family: "Arial Black", Gadget, sans-serif;
+}
+
+#main-wrap {
+  position: relative;
+  width: 850px;
+  height: 320px;
+  overflow: hidden;
+}
+
+#main-wrap div, #main-wrap canvas {
+  position: absolute;
+  border: 2px solid #444;
+}
+
+#input-area {
+  width: 300px;
+  height: 250px;
+  background-color: #cfd8c8;
+}
+
+#button-progress {
+  width: 300px;
+  height: 40px;
+  top: 260px;
+  background-color: #cfd8c8;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+#fleet-display {
+  left: 310px;
+  background-color: black;
+}
