@@ -1,0 +1,13 @@
+﻿#content {
+  padding: 10px;
+}
+
+#inputs {
+  margin-bottom: 20px;
+}
+
+#warning {
+  background-color: #ffff97;
+  padding: 5px;
+  margin: 10px 0;
+}
