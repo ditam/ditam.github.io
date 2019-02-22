@@ -11,3 +11,11 @@
   padding: 5px;
   margin: 10px 0;
 }
+
+#validation-mode-input {
+  margin-top: 20px;
+}
+
+#results {
+  width: 370px;
+}
