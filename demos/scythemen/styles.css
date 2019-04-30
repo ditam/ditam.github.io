@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+  background: black;
+}
+
+#overlay {
+  width: 180px;
+  height: 200px;
+  position: absolute;
+  left: 25px;
+  top: 25px;
+  color: white;
+  user-select: none;
+}
+
+#overlay .row {
+  height: 36px;
+  width: 100px;
+  background-color: #222;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-family: sans-serif;
+  position: relative;
+}
+
+#overlay .row .value {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+}
+
+#overlay .info {
+  margin-top: 40px;
+}
+
+#overlay .info > div {
+  margin-bottom: 10px;
+}
+
+#buy-button {
+  position: relative;
+  vertical-align: top;
+}
+
+#buy-button img {
+  cursor: pointer;
+}
+
+#buy-button > span {
+  position: absolute;
+  top: 8px;
+}
+
+.inlined {
+  display: inline-block;
+}
+
+img {
+  width: 32px;
+  height: 32px;
+  padding-left: 8px;
+}
+
+img.tall {
+  height: 64px;
+}
