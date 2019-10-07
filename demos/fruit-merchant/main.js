@@ -322,6 +322,7 @@ $(function() {
     rot(inventory, products, Math.abs(towns[prevTown].distance - towns[currentTown].distance));
     renderInventory(products, inventory, money);
     increaseStockpiles(towns, products, prices);
+    renderPricesTable(towns, products, prices);
   });
   
   $('#prices-button').click(function() {
