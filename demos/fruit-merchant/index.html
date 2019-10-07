@@ -1,0 +1,52 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Merchant Game</title>
+  <meta name="description" content="A small game made for Ludum Dare 45">
+
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png" sizes="16x16">
+</head>
+
+<body>
+  <div id="top-container">
+    <div id="prices-button">Show Prices</div>
+    <div id="mute-button"><img src="assets/icons/sound-muted.png"></div>
+    <table id="inventory"></table>
+    <div id="money-container">
+      <span>$</span>
+      <span id="counter">0</span>
+    </div>
+  </div>
+  <div id="main-container">
+    <img src="assets/images/map.png" width="1024" height="576" usemap="#main-map"/>
+    <map name="main-map">
+      <area shape="rect" coords="90,380,230,470" data-name="Edgemoor">
+      <area shape="rect" coords="10,130,160,220" data-name="Lorvale">
+      <area shape="rect" coords="190,0,320,110" data-name="Wildeash">
+      <area shape="rect" coords="420,0,560,110" data-name="Cliffholt">
+      <area shape="rect" coords="340,330,470,450" data-name="Janton">
+      <area shape="rect" coords="650,150,780,270" data-name="Blelridge">
+      <area shape="rect" coords="870,40,1000,170" data-name="Sagewynne">
+      <area shape="rect" coords="890,340,1010,470" data-name="Ostmont">
+    </map>
+
+    <div id="player"><img src="assets/icons/player.png" /></div>
+    
+    <div id="trade-container" class="dialog">
+    </div>
+    <div id="message-container" class="dialog">
+    </div>
+    <div id="prices-container" class="dialog">
+      <table></table>
+    </div>
+  </div>
+
+
+  <script src="jquery-3.4.1.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
