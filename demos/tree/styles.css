@@ -1,0 +1,468 @@
+﻿
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  user-select: none;
+}
+
+.wrapper {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  width: 1150px;
+}
+
+.wrapper .toolbar {
+  width: 1150px;
+  background-color: #eaeaea;
+  height: 30px;
+}
+
+.wrapper .toolbar .resources {
+  position: absolute;
+  top: 5px;
+  left: 215px;
+}
+
+.wrapper .toolbar .resources .resource {
+  padding-right: 25px;
+}
+
+.wrapper .toolbar .calendar {
+  float: right;
+  padding: 10px;
+  line-height: 10px;
+}
+
+.wrapper .tabs {
+  width: 200px;
+  font-size: 32px;
+  font-weight: 700;
+  cursor: pointer;
+
+  background-image: url('assets/images/tree-silhouette.png');
+}
+
+.wrapper .tabs.game-over {
+  filter: grayscale(1);
+}
+
+.wrapper .tabs .tab {
+  width: 200px;
+  height: 200px;
+  line-height: 200px;
+  text-align: center;
+  color: rgba(255,255,255, 0.1);
+  text-transform: uppercase;
+  background-color: rgba(0, 50, 15, 0.95);
+}
+
+.wrapper .tabs .tab.selected {
+  background-color: rgba(0, 50, 15, 0.85);
+  color: rgba(255,255,255, 0.5);
+}
+
+.wrapper .tabs .tab:hover {
+  background-color: rgba(0, 50, 15, 0.85);
+}
+
+.wrapper canvas {
+  position: absolute;
+  top: 30px; /* .toolbar height - move upgrade-modal too when changing, maybe error-modal as well */
+  left: 200px; /* .tabs width */
+}
+
+/* Upgrade modal - header first */
+
+.wrapper #upgrade-modal {
+  position: absolute;
+  top: 80px; /* 50 + toolbar height */
+  left: 300px;
+  width: 700px;
+  height: 500px;
+
+  transition: top 0.5s ease;
+}
+
+.wrapper #upgrade-modal.hidden {
+  top: 580px; /* 550 + toolbar height */
+}
+
+.wrapper #upgrade-modal > .header {
+  float: right;
+  width: 250px;
+  height: 50px;
+
+  background-color: #485e69;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid #242040;
+  border-bottom: none;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.wrapper #upgrade-modal > .header .arrow {
+  display: inline-block;
+  width: 0;
+  border: 12px solid transparent;
+  border-top: 12px solid #b10a0a;
+
+  margin-top: 20px;
+  margin-left: 12px;
+}
+
+.wrapper #upgrade-modal.hidden > .header .arrow {
+  border: 12px solid transparent;
+  border-bottom: 12px solid #b10a0a;
+
+  margin-top: 6px;
+  margin-left: 12px;
+}
+
+.wrapper #upgrade-modal > .header .label {
+  position: absolute;
+  font-size: 20px;
+  top: 12px;
+  right: 60px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.6);
+}
+
+.wrapper #upgrade-modal > .header:hover .label {
+  color: rgba(255,255,255,0.7);
+}
+
+/* Upgrade modal content */
+
+.wrapper #upgrade-modal .content {
+  float: right;
+  width: 100%;
+  height: calc(100% - 50px);
+
+  border-radius: 5px;
+  border-top-right-radius: 0;
+
+  background-color: rgba(15,80,5,0.7);
+
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, .7);
+}
+
+.wrapper #upgrade-modal .content .header,
+.wrapper #upgrade-modal .content .row-container {
+  padding: 20px;
+}
+
+.wrapper #upgrade-modal .content .row {
+  position: relative;
+}
+
+.wrapper #upgrade-modal .content .row + .row {
+  margin-top: 35px; /* not padding, to move the absolutely positioned items within */
+}
+
+.wrapper #upgrade-modal .content .row .icon {
+  display: inline-block;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 2px;
+  background-color: rgba(20,50,50,0.8);
+}
+
+.wrapper #upgrade-modal .content .row .title {
+  position: absolute;
+  top: 0;
+  left: 85px;
+  font-weight: 700;
+}
+
+.wrapper #upgrade-modal .content .row .description {
+  position: absolute;
+  top: 25px;
+  left: 85px;
+  max-width: 470px; /* so as not to overlay the buy/bought button */
+}
+
+.wrapper #upgrade-modal .content .row .button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  border: 1px solid darkgreen;
+  background: green;
+  border-radius: 5px;
+  font-weight: 700;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.wrapper #upgrade-modal .content .row .button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  border: 1px solid darkgreen;
+  background: green;
+  border-radius: 5px;
+  font-weight: 700;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.wrapper #upgrade-modal .content .row .cost {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* layout adjustments for bought state */
+
+.wrapper #upgrade-modal .content .row:not(.bought) .button.bought {
+  display: none;
+}
+
+.wrapper #upgrade-modal .content .row.bought .button.bought {
+  background: transparent;
+  cursor: auto;
+}
+
+.wrapper #upgrade-modal .content .row.bought .button.buy {
+  display: none;
+}
+
+.wrapper #upgrade-modal .content .row.bought .cost {
+  display: none;
+}
+
+.wrapper #upgrade-modal .content .row.bought .icon {
+  background-color: green;
+}
+
+/* Error modal */
+.wrapper #error-modal {
+  position: absolute;
+  display: table;
+  top: 250px;
+  left: 500px;
+  width: 300px;
+  height: 150px;
+
+  background-color: rgba(150,10,10,0.7);
+  cursor: pointer;
+
+  text-align: center;
+
+  transition: top 0.3s ease;
+}
+
+.wrapper #error-modal.hidden {
+  top: 700px;
+}
+
+.wrapper #error-modal .message {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+}
+
+.wrapper #error-modal .footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* Game over modal */
+.wrapper #game-over-modal {
+  position: absolute;
+  display: table;
+  top: 200px;
+  left: 450px;
+  width: 400px;
+  height: 220px;
+
+  background-color: gray;
+  border: 1px solid black;
+  cursor: pointer;
+
+  text-align: center;
+
+  transition: top 1s ease;
+}
+
+.wrapper #game-over-modal.hidden {
+  top: -700px;
+}
+
+.wrapper #game-over-modal .wrapper {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.wrapper #game-over-modal .wrapper .header {
+  padding-top: 20px;
+}
+
+.wrapper #game-over-modal .wrapper .message {
+  padding: 20px;
+}
+
+.wrapper #game-over-modal .wrapper .button {
+  padding: 10px 0;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+  background-color: #aaa;
+}
+
+.wrapper #game-over-modal .wrapper .button:hover {
+  padding: 10px 0;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+  background-color: transparent;
+}
+
+/* Inlined resource icons */
+.resource {
+  font-weight: 700;
+  white-space: nowrap; /* this forbids wrapping the icon and text into separate lines */
+}
+
+.resource.carb {
+  color: #ffa500;
+}
+
+.resource.stem {
+  color: darkgreen;
+  /*text-shadow: 1px 1px 2px black;*/
+}
+
+.resource.water {
+  color: #2717ec;
+  /*text-shadow: 1px 1px 2px black;*/
+}
+
+.resource.carb:before {
+  content: "";
+  display: inline-block;
+  background: url("assets/images/icon-carb.png") no-repeat;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  margin: 0 6px 0 0;
+}
+
+.resource.stem:before {
+  content: "";
+  display: inline-block;
+  background: url("assets/images/icon-stem.png") no-repeat;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  margin: 0 6px 0 0;
+}
+
+.resource.water:before {
+  content: "";
+  display: inline-block;
+  background: url("assets/images/icon-water.png") no-repeat;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  margin: 0 6px 0 0;
+}
+
+/* Main buttons */
+
+#time-controls {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  cursor: pointer;
+}
+
+#time-controls > div {
+  display: inline-block;
+}
+
+#time-controls .message {
+  font-size: 20px;
+  left: 0;
+  vertical-align: top;
+  padding-top: 10px;
+  padding-right: 10px;
+  font-weight: 700;
+  text-shadow: 1px 1px 1px white;
+}
+
+#time-controls #next-month-button {
+  width: 0;
+  border: 24px solid transparent;
+  border-left: 24px solid #b10a0a;
+  opacity: 0.8;
+}
+
+#time-controls:hover #next-month-button {
+  opacity: 1;
+}
+
+#buttons-container {
+  position: absolute;
+  left: 350px;
+  top: 400px;
+}
+
+#buttons-container.alt {
+  position: absolute;
+  left: 750px;
+  top: 250px;
+}
+
+#buttons-container .button {
+  width: 150px;
+  height: 35px;
+  line-height: 35px;
+  padding: 15px;
+  padding-top: 5px;
+  padding-bottom: 35px;
+  border: 1px solid black;
+  background-color: rgba(70,90,100,0.8);
+  cursor: pointer;
+  margin-bottom: 40px;
+
+  border-radius: 15px;
+  text-align: center;
+  font-size: 18px;
+
+  color: rgba(255,255,255,0.8);
+}
+
+#buttons-container .cost-display + .button {
+  margin-top: 15px;
+}
+
+#buttons-container .button + .cost-display {
+  margin-top: -75px;
+  width: 180px;
+  text-align: center;
+}
+
+#buttons-container.alt .button {
+  width: 220px;
+}
+
+#buttons-container.alt .button + .cost-display {
+  width: 240px;
+}
+
+
+#buttons-container .button:hover {
+  color: rgba(255,255,255,0.6);
+}
