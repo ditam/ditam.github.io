@@ -168,7 +168,7 @@ body {
   border: 2px solid black;
   border-radius: 10px;
   padding: 2px;
-  background-color: rgba(20,50,50,0.8);
+  background-color: rgba(20,50,50,0.85);
 }
 
 .wrapper #upgrade-modal .content .row .title {
@@ -249,7 +249,7 @@ body {
   width: 300px;
   height: 150px;
 
-  background-color: rgba(150,10,10,0.7);
+  background-color: rgba(150,10,10,0.9);
   cursor: pointer;
 
   text-align: center;
