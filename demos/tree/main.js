@@ -251,6 +251,9 @@ function consumeResources() {
   if (game.state.month > 2 && game.state.month < 10) {
     game.state.resources.carb += leaves;
   }
+  
+  game.state.resources.stem += game.state.tree.trunkSize * 20;
+  
   game.state.resources.water -= leaves;
   game.state.resources.water -= PARAMS.BASE_WATER_LOSS;
 
