@@ -143,7 +143,7 @@ function renderButtons(scene) {
   $('#buttons-container').empty();
   if (scene === 'branches') {
     const addLeavesButton = $('<div>').addClass('button add-leaves').text('Grow new leaves');
-    const addLeavesCost = [50, 100, 350];
+    const addLeavesCost = [50, 110, 140];
     let costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(addLeavesCost));
     $('#buttons-container').removeClass('alt').append(addLeavesButton);
     $('#buttons-container').append(costDisplay);
