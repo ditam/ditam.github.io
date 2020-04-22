@@ -8,7 +8,7 @@
   ROOT_CAPACITY: 2,
   BASE_WATER_LOSS: 2,
   FEEDER_DURATION: 3,
-  DEBUG: true,
+  DEBUG: false,
 });
 
 const game = {
@@ -143,36 +143,36 @@ function renderButtons(scene) {
   $('#buttons-container').empty();
   if (scene === 'branches') {
     const addLeavesButton = $('<div>').addClass('button add-leaves').text('Grow new leaves');
-    let cost = [50, 100, 350];
-    let costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(cost));
+    const addLeavesCost = [50, 100, 350];
+    let costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(addLeavesCost));
     $('#buttons-container').removeClass('alt').append(addLeavesButton);
     $('#buttons-container').append(costDisplay);
     const leafBatchSize = 5; // TODO: move to params or make dynamic based on current count
     addLeavesButton.on('click', function() {
       if (game.state.isOver) { return; }
-      if (!checkCost(cost)) {
+      if (!checkCost(addLeavesCost)) {
         return;
       }
       if (!checkCapacity('leaves', leafBatchSize)) {
         return;
       }
-      payCost(cost);
+      payCost(addLeavesCost);
       game.state.tree.leaves += leafBatchSize;
       game.drawScene();
       game.ui.updateToolbar();
     });
 
     const dropLeavesButton = $('<div>').addClass('button drop-leaves').text('Drop all leaves');
-    cost = [1, 5, 0];
-    costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(cost));
+    const dropLeavesCost = [1, 5, 0];
+    costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(dropLeavesCost));
     $('#buttons-container').append(dropLeavesButton);
     $('#buttons-container').append(costDisplay);
     dropLeavesButton.on('click', function() {
       if (game.state.isOver) { return; }
-      if (!checkCost(cost)) {
+      if (!checkCost(dropLeavesCost)) {
         return;
       }
-      payCost(cost);
+      payCost(dropLeavesCost);
       if (game.utils.getUpgradeByID('up_b2').bought) {
         game.state.tree.areLeavesDropping = true;
       } else {
@@ -183,65 +183,66 @@ function renderButtons(scene) {
     });
   } else if (scene === 'trunk') {
     const addBranchButton = $('<div>').addClass('button add-branches').text('Grow branches');
-    let cost = [30, 100, 20];
-    let costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(cost));
+    const addBranchCost = [30, 100, 20];
+    let costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(addBranchCost));
     $('#buttons-container').removeClass('alt').append(addBranchButton);
     $('#buttons-container').append(costDisplay);
     addBranchButton.on('click', function() {
       if (game.state.isOver) { return; }
-      if (!checkCost(cost)) {
+      if (!checkCost(addBranchCost)) {
         return;
       }
       if (!checkCapacity('branches', 1)) {
         return;
       }
-      payCost(cost);
+      payCost(addBranchCost);
       game.state.tree.branches++;
       game.ui.updateToolbar();
     });
     const addTrunkButton = $('<div>').addClass('button add-branches').text('Grow trunk');
-    cost = [50, 200, 40];
-    costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(cost));
+    const addTrunkCost = [50, 200, 40];
+    costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(addTrunkCost));
     $('#buttons-container').append(addTrunkButton);
     $('#buttons-container').append(costDisplay);
     addTrunkButton.on('click', function() {
       if (game.state.isOver) { return; }
-      if (!checkCost(cost)) {
+      if (!checkCost(addTrunkCost)) {
         return;
       }
-      payCost(cost);
+      payCost(addTrunkCost);
       game.state.tree.trunkSize++;
       game.ui.updateToolbar();
     });
   } else if (scene === 'roots') {
     const growRootsButton = $('<div>').addClass('button add-branches').text('Grow perennial roots');
-    let cost = [30, 150, 25];
-    let costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(cost));
+    const growRootsCost = [30, 150, 25];
+    let costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(growRootsCost));
     $('#buttons-container').addClass('alt').append(growRootsButton);
     $('#buttons-container').append(costDisplay);
     growRootsButton.on('click', function() {
       if (game.state.isOver) { return; }
-      if (!checkCost(cost)) {
+      if (!checkCost(growRootsCost)) {
         return;
       }
-      payCost(cost);
+      payCost(growRootsCost);
       game.state.tree.rootSize++;
       game.ui.updateToolbar();
     });
     const growFeederButton = $('<div>').addClass('button add-branches').text('Grow feeder roots');
-    cost = [10, 30, 10];
-    costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(cost));
+    const growFeederCost = [10, 30, 10];
+    costDisplay = $('<div>').addClass('cost-display').html(getCostHTML(growFeederCost));
     $('#buttons-container').append(growFeederButton);
     $('#buttons-container').append(costDisplay);
     growFeederButton.on('click', function() {
       if (game.state.isOver) { return; }
-      if (!checkCost(cost)) {
+      if (!checkCost(growFeederCost)) {
         return;
       }
-      payCost(cost);
+      payCost(growFeederCost);
       game.state.tree.hasFeeder = true;
       game.state.tree.feederAge = 0;
       game.ui.updateToolbar();
+      game.drawScene();
     });
   }
 }
@@ -249,20 +250,28 @@ function renderButtons(scene) {
 function consumeResources() {
   const leaves = game.state.tree.leaves;
   if (game.state.month > 2 && game.state.month < 10) {
-    game.state.resources.carb += leaves;
+    const lightMultiplier = game.utils.getUpgradeByID('up_b0').bought? 1.4 : 1;
+    game.state.resources.carb += Math.floor(leaves * lightMultiplier);
   }
-  
-  game.state.resources.stem += game.state.tree.trunkSize * 20;
-  
-  game.state.resources.water -= leaves;
+
+  const waterLossRate = game.utils.getUpgradeByID('up_b1').bought? 0.7 : 1;
+  game.state.resources.water -= Math.floor(leaves * waterLossRate);
   game.state.resources.water -= PARAMS.BASE_WATER_LOSS;
 
+  game.state.resources.stem += game.state.tree.trunkSize * 20;
+
+  const partnershipUpgrade = game.utils.getUpgradeByID('up_r1');
+  if (game.utils.getUpgradeByID('up_r0').bought) {
+    const carbEfficiency = partnershipUpgrade.bought? 13 : 10;
+    game.state.resources.carb += game.state.tree.rootSize * carbEfficiency;
+  }
+
   if (game.state.tree.hasFeeder) {
-    game.state.resources.water += 100;
+    game.state.resources.water += partnershipUpgrade.bought? 150 : 100;
     game.state.tree.feederAge++;
 
-    const upgrade = game.utils.getUpgradeByID('up_r2');
-    const bonus = upgrade.bought? 3 : 0;
+    const feederUpgrade = game.utils.getUpgradeByID('up_r2');
+    const bonus = feederUpgrade.bought? 3 : 0;
     if (game.state.tree.feederAge >= PARAMS.FEEDER_DURATION + bonus) {
       game.state.tree.hasFeeder = false;
       game.state.tree.feederAge = undefined;
@@ -273,11 +282,14 @@ function consumeResources() {
 function checkDeath() {
   function endGame(message) {
     game.state.isOver = true;
-    $('#game-over-modal .message').text(message);
+    $('#game-over-modal .message').html(message);
     $('#game-over-modal').removeClass('hidden');
     $('#game-over-modal .button').on('click', game.resetState);
     $('.wrapper .tabs').addClass('game-over');
   }
+
+  let message = '';
+
   // if the biomass exceeds the root capacity, the tree topples over
   const branches = game.state.tree.branches;
   const wBranch = PARAMS.BRANCH_WEIGHT;
@@ -294,6 +306,30 @@ function checkDeath() {
   if (game.state.resources.water < 0) {
     message = 'After using up all of its water reserves, it could not sustain its ' +
               ' most fundamental functions.';
+    endGame(message);
+    return;
+  }
+
+  // if you're doing too well for too long, humans will cut you down...
+  const allUpgradesBought = [
+    'up_b0', 'up_b1', 'up_b2',
+    'up_t0', 'up_t1', 'up_t2',
+    'up_r0', 'up_r1', 'up_r2',
+  ].every(function(id) {
+    return game.utils.getUpgradeByID(id).bought;
+  });
+
+  if (
+    allUpgradesBought &&
+    game.state.year > 19 &&
+    game.state.resources.carb > 1000 &&
+    game.state.resources.stem > 1000 &&
+    game.state.resources.water > 1000
+  ) {
+    message = 'Being the tallest and healthiest tree in the area, you\'ve attracted the interest of humans. ' +
+              'They cut you down for timber.' +
+              '<br/><br/>You did as well as you could.' +
+              '<br/><br/>Thank you for playing!';
     endGame(message);
     return;
   }
@@ -348,7 +384,6 @@ $(function(){
   $('#upgrade-modal').on('click', '.row .button.buy', function() {
     const id = $(this).data('upgrade-id');
     const upgrade = game.utils.getUpgradeByID(id);
-    console.log('upgrade is:', upgrade);
     if(!checkCost(upgrade.cost)) {
       return;
     }
@@ -400,6 +435,13 @@ $(function(){
       if (e.ctrlKey) {
         const coords = game.utils.getCoords(canvas, e);
         console.log(JSON.stringify(coords) + ',');
+        // add resources if click in bottom left :)
+        if (coords.x < 20 && coords.y > 580) {
+          game.state.resources.carb += 1000;
+          game.state.resources.stem += 1000;
+          game.state.resources.water += 1000;
+          game.ui.updateToolbar();
+        }
       }
     });
   }

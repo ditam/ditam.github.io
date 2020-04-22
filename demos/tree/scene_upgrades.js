@@ -9,7 +9,7 @@ game.upgrades = {
 				name: 'Apical Dominance',
 				icon: 'icon-branch',
 				description: 'Designate the main trunk, to gain height and access to more light.',
-				cost: [100, 300, 50],
+				cost: [30, 100, 120],
 				bought: false,
 			},
 			{
@@ -17,7 +17,7 @@ game.upgrades = {
 				name: 'Stomata Guards',
 				icon: 'icon-light',
 				description: 'Use guard cells to open and close the stomata during the day, improving energy efficiency.',
-				cost: [200, 200, 20],
+				cost: [50, 200, 50],
 				bought: false,
 			},
 			{
@@ -70,7 +70,7 @@ game.upgrades = {
 				name: 'Mutualistic Aerobes',
 				icon: 'icon-bacteria',
 				description: 'Aerobic organisms populate the root microbiome, supplying nutrients and improving soil quality.',
-				cost: [50, 100, 200],
+				cost: [25, 10, 150],
 				bought: false,
 			},
 			{
@@ -79,7 +79,7 @@ game.upgrades = {
 				icon: 'icon-root',
 				description: 'Symbiotic fungi intertwine the roots, improving absorption of nutrients in exchange for ' +
 				             '<span class="resource carb">carbohydrates.</span>',
-				cost: [50, 100, 200],
+				cost: [10, 10, 150],
 				bought: false,
 			},
 			{
@@ -88,7 +88,7 @@ game.upgrades = {
 				icon: 'icon-bug',
 				description: 'The recruitment of organisms hostile to insects, mites and ticks protects from diseases and ' +
                      'improves root longevity.',
-				cost: [50, 100, 200],
+				cost: [50, 10, 20],
 				bought: false,
 			}
 		]

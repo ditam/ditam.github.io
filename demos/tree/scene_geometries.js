@@ -245,6 +245,85 @@ game.objects = {
         {x: 1100, y: 0},
       ]
     },
+    {
+      color: 'black',
+      name: 'feeder',
+      outlined: true,
+      outlineColor: 'black',
+      points: [
+        {x: 266, y: 297},
+        {x: 211, y: 315},
+        {x: 190, y: 270},
+        {x: 208, y: 314},
+        {x: 162, y: 326},
+        {x: 123, y: 317},
+        {x: 155, y: 327},
+        {x: 129, y: 350},
+        {x: 159, y: 330},
+        {x: 261, y: 309},
+      ]
+    },
+    {
+      color: 'black',
+      name: 'feeder',
+      outlined: true,
+      outlineColor: 'black',
+      points: [
+        {x:266, y: 367},
+        {x:259, y: 436},
+        {x:205, y: 453},
+        {x:259, y: 440},
+        {x:262, y: 499},
+        {x:263, y: 419},
+        {x:324, y: 448},
+        {x:266, y: 413},
+        {x:276, y: 363},
+      ]
+    },
+    {
+      color: 'black',
+      name: 'feeder',
+      outlined: true,
+      outlineColor: 'black',
+      points: [
+        {x: 452, y: 357},
+        {x: 509, y: 399},
+        {x: 455, y: 422},
+        {x: 514, y: 400},
+        {x: 599, y: 418},
+        {x: 568, y: 456},
+        {x: 606, y: 419},
+        {x: 658, y: 420},
+        {x: 660, y: 433},
+        {x: 663, y: 419},
+        {x: 677, y: 419},
+        {x: 605, y: 411},
+        {x: 648, y: 384},
+        {x: 659, y: 382},
+        {x: 644, y: 380},
+        {x: 597, y: 411},
+        {x: 521, y: 395},
+        {x: 468, y: 345},
+      ]
+    },
+    {
+      color: 'black',
+      name: 'feeder',
+      outlined: true,
+      outlineColor: 'black',
+      points: [
+        {x: 853, y: 227},
+        {x: 860, y: 281},
+        {x: 857, y: 378},
+        {x: 822, y: 434},
+        {x: 862, y: 379},
+        {x: 864, y: 290},
+        {x: 864, y: 336},
+        {x: 900, y: 350},
+        {x: 867, y: 327},
+        {x: 861, y: 231},
+      ]
+    },
   ]
 };
 

@@ -65,6 +65,10 @@ game.drawScene = function() {
   ctx.clearRect(0, 0, PARAMS.WIDTH, PARAMS.HEIGHT);
 
   for (const o of game.objects[game.currentScene]) {
+    if (o.name === 'feeder' && !game.state.tree.hasFeeder) {
+      return;
+    }
+
     // NB: if this ever becomes a performance issue, just drop it and the .shift() below
     let points = game.utils.clone(o.points)
     ctx.save();
