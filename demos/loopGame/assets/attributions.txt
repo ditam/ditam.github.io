@@ -1,0 +1,15 @@
+All of the used image and sound assets are in the public domain (CC0 license).
+
+Most of the images are based on the Cartography Pack by Kenney:
+https://www.kenney.nl/assets/cartography-pack
+
+Music assets based on:
+
+Sad Orchestral Theme by Oddroom
+https://opengameart.org/content/sad-orchestral-theme
+
+Fantasy Orchestral Theme by Joth
+https://opengameart.org/content/fantasy-orchestral-theme
+
+Village Ruins by isaiah658
+https://opengameart.org/content/village-ruins
