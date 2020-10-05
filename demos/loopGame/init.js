@@ -7,8 +7,8 @@ const game = {
     hasTask: false,
     lastDrawTime: 0,
     mapBounds: {
-      x: 800,
-      y: 500
+      x: STAGE_BOUNDS[0].x,
+      y: STAGE_BOUNDS[0].y
     },
     // objects is a coordinate-ordered list of map elements,
     // so that no z-index needs to be considered when iterating and rendering
