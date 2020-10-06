@@ -5,7 +5,7 @@
   game.tasks = [
     {
       id: 'go-to-well',
-      startMessage: 'He went straight to the well.',
+      startMessage: 'Like every morning, he went straight to the well.',
       endMessage: null,
       startEffect: function(gameState) {
         const well = game.utils.findObjectByID('well', gameState.objects);
@@ -32,7 +32,7 @@
         }
         // TODO: save times - will allow waiting tasks and speed-based checks
       },
-      checker: function(playerCoords) {
+      checker: function(player) {
         const taskState = {
           completed: false,
           failed: false
@@ -40,13 +40,13 @@
 
         const bounds = currentTask.acceptableBounds;
         if (
-          playerCoords.x < bounds.x0 || playerCoords.y < bounds.y0 ||
-          playerCoords.x > bounds.x1 || playerCoords.y > bounds.y1
+          player.x < bounds.x0 || player.y < bounds.y0 ||
+          player.x > bounds.x1 || player.y > bounds.y1
         ) {
           taskState.failed = true;
         }
 
-        taskState.completed = game.utils.isObjectInProximity(playerCoords, currentTask.target);
+        taskState.completed = game.utils.isObjectInProximity(player, currentTask.target);
 
         return taskState;
       }
@@ -79,7 +79,7 @@
           y1: Math.max(currentTask.target.y, currentTask.startPosition.y) + 50
         }
       },
-      checker: function(playerCoords) {
+      checker: function(player) {
         const taskState = {
           completed: false,
           failed: false
@@ -87,13 +87,13 @@
 
         const bounds = currentTask.acceptableBounds;
         if (
-          playerCoords.x < bounds.x0 || playerCoords.y < bounds.y0 ||
-          playerCoords.x > bounds.x1 || playerCoords.y > bounds.y1
+          player.x < bounds.x0 || player.y < bounds.y0 ||
+          player.x > bounds.x1 || player.y > bounds.y1
         ) {
           taskState.failed = true;
         }
 
-        taskState.completed = game.utils.isObjectInProximity(playerCoords, currentTask.target);
+        taskState.completed = game.utils.isObjectInProximity(player, currentTask.target);
 
         return taskState;
       }
@@ -118,13 +118,13 @@
           startTime: gameState.lastDrawTime
         };
       },
-      checker: function(playerCoords, gameState) {
+      checker: function(player, gameState) {
         const taskState = {
           completed: false,
           failed: false
         };
 
-        taskState.completed = game.utils.isObjectInProximity(playerCoords, currentTask.target);
+        taskState.completed = game.utils.isObjectInProximity(player, currentTask.target);
         taskState.failed = gameState.lastDrawTime - currentTask.startTime > 60*1000;
 
         return taskState;
@@ -132,28 +132,41 @@
     },
     {
       id: 'stay-at-fire',
-      startMessage: 'And he just stood there for a while.',
+      startMessage: 'And he just stood there for a while to warm up.',
       setData: function(player, gameState) {
         currentTask = {
           startPosition: {
             x: player.x,
             y: player.y
           },
-          startTime: gameState.lastDrawTime
+          startTime: gameState.lastDrawTime,
+          inGracePeriod: true
         };
       },
-      checker: function(playerCoords, gameState) {
+      checker: function(player, gameState) {
         const taskState = {
           completed: false,
           failed: false
         };
 
+        if (gameState.lastDrawTime - currentTask.startTime > (this.startMessage.length * MESSAGE_CHAR_DELAY)+300) {
+          currentTask.inGracePeriod = false;
+          currentTask.startPosition = {
+            x: player.x,
+            y: player.y
+          };
+        }
+
+        if (currentTask.inGracePeriod) {
+          return taskState;
+        }
+
         const bounds = currentTask.acceptableBounds;
         if (
-          playerCoords.x !== currentTask.startPosition.x ||
-          playerCoords.y !== currentTask.startPosition.y
+          player.x !== currentTask.startPosition.x ||
+          player.y !== currentTask.startPosition.y
         ) {
-          if (gameState.lastDrawTime - currentTask.startTime > 300) {
+          if (gameState.lastDrawTime - currentTask.startTime > gracePeriod) {
             taskState.failed = true;
           }
         }
@@ -185,13 +198,13 @@
           startTime: gameState.lastDrawTime
         };
       },
-      checker: function(playerCoords, gameState) {
+      checker: function(player, gameState) {
         const taskState = {
           completed: false,
           failed: false
         };
 
-        taskState.completed = game.utils.isObjectInProximity(playerCoords, currentTask.target);
+        taskState.completed = game.utils.isObjectInProximity(player, currentTask.target);
         taskState.failed = gameState.lastDrawTime - currentTask.startTime > 60*1000;
 
         return taskState;
@@ -199,7 +212,7 @@
     },
     {
       id: 'go-home-end-stage',
-      startMessage: 'It was time to go home.',
+      startMessage: 'It was time for him to go home.',
       endEffect: function(gameState) {
         if (game.meta.resets > 10) {
           resetGame('He didn\'t -need- to go home, of course...');
@@ -221,15 +234,15 @@
           startTime: gameState.lastDrawTime
         };
       },
-      checker: function(playerCoords, gameState) {
+      checker: function(player, gameState) {
         const taskState = {
           completed: false,
           failed: false
         };
 
-        taskState.completed = game.utils.isObjectInProximity(playerCoords, currentTask.target);
+        taskState.completed = game.utils.isObjectInProximity(player, currentTask.target);
 
-        taskState.failed = playerCoords.x > currentTask.startPosition.x + 50;
+        taskState.failed = player.x > currentTask.startPosition.x + 50;
 
         return taskState;
       }
@@ -239,13 +252,13 @@
       setData: function() {
         // dummy // TODO make optional
       },
-      checker: function(playerCoords, gameState) {
+      checker: function(player, gameState) {
         const taskState = {
           completed: false,
           failed: false
         };
 
-        taskState.completed = playerCoords.x > 900 && playerCoords.y < 270;
+        taskState.completed = player.x > 850 && player.y < 270;
 
         return taskState;
       }
@@ -255,6 +268,8 @@
       startEffect: function(gameState) {
         const target = game.utils.findObjectByID('bridge', gameState.objects);
         game.utils.fadeInObject(target);
+        game.state.forcedScrolling = true;
+        game.state.forcedScrollCount = 0;
       },
       startMessage: 'He was happy to see the old bridge, and headed straight for it.',
       setData: function(player, gameState) {
@@ -276,7 +291,7 @@
           y1: Math.max(currentTask.target.y, currentTask.startPosition.y) + 50
         }
       },
-      checker: function(playerCoords) {
+      checker: function(player) {
         const taskState = {
           completed: false,
           failed: false
@@ -284,25 +299,28 @@
 
         const bounds = currentTask.acceptableBounds;
         if (
-          playerCoords.x < bounds.x0 || playerCoords.y < bounds.y0 ||
-          playerCoords.x > bounds.x1 || playerCoords.y > bounds.y1
+          player.x < bounds.x0 || player.y < bounds.y0 ||
+          player.x > bounds.x1 || player.y > bounds.y1
         ) {
           taskState.failed = true;
         }
 
-        taskState.completed = game.utils.isObjectInProximity(playerCoords, currentTask.target);
+        taskState.completed = game.utils.isObjectInProximity(player, currentTask.target);
 
         return taskState;
       }
     },
     {
       id: 'stage-2-stay-at-bridge',
+      endEffect: function(gameState) {
+        gameState.choices++;
+      },
       startEffect: function(gameState) {
         const targets = gameState.objects.filter((obj) => obj.class==='river-scenery');
         targets.forEach(game.utils.fadeInObject);
       },
-      endMessage: 'He just walked around until the developer fixed the missing scenes.',
       startMessage: 'From the bridge, he took a long look at the riverside.',
+      endMessage: 'The view inspired him to explore.',
       setData: function(player, gameState) {
         currentTask = {
           startPosition: {
@@ -312,16 +330,28 @@
           startTime: gameState.lastDrawTime
         };
       },
-      checker: function(playerCoords, gameState) {
+      checker: function(player, gameState) {
         const taskState = {
           completed: false,
           failed: false
         };
 
+        if (gameState.lastDrawTime - currentTask.startTime > (this.startMessage.length * MESSAGE_CHAR_DELAY)+300) {
+          currentTask.inGracePeriod = false;
+          currentTask.startPosition = {
+            x: player.x,
+            y: player.y
+          };
+        }
+
+        if (currentTask.inGracePeriod) {
+          return taskState;
+        }
+
         const bounds = currentTask.acceptableBounds;
         if (
-          playerCoords.x !== currentTask.startPosition.x ||
-          playerCoords.y !== currentTask.startPosition.y
+          player.x !== currentTask.startPosition.x ||
+          player.y !== currentTask.startPosition.y
         ) {
           if (gameState.lastDrawTime - currentTask.startTime > 300) {
             taskState.failed = true;
@@ -333,5 +363,219 @@
         return taskState;
       }
     },
+    {
+      id: 'stage-2-finale-trigger',
+      setData: function() {
+        // dummy // TODO make optional
+      },
+      checker: function(player, gameState) {
+        const taskState = {
+          completed: false,
+          failed: false
+        };
+
+        // triggered in bottom left corner outside of stage1
+        taskState.completed = (
+          (player.x < 700 && player.y > 500) || // either arriving from the east
+          (player.x < 450 && player.y > 400) // or from the top
+        );
+
+        return taskState;
+      }
+    },
+    {
+      id: 'stage-2-end-choice',
+      startMessage: 'The wolves in the south scared him, so he headed straight home.',
+      blocksAutoContinue: true,
+      endEffect: function(gameState) {
+        if (game.meta.resets > 20) {
+          resetGame('He wished he had dared the wolves.');
+        } else {
+          resetGame('He felt like he was missing out on something.');
+        }
+      },
+      setData: function(player, gameState) {
+        const target = game.utils.findObjectByID('home', gameState.objects);
+        currentTask = {
+          target: {
+            x: target.x,
+            y: target.y
+          },
+          startPosition: {
+            x: player.x,
+            y: player.y
+          }
+        };
+      },
+      checker: function(player, gameState) {
+        const taskState = {
+          completed: false,
+          failed: false
+        };
+
+        taskState.completed = game.utils.isObjectInProximity(player, currentTask.target);
+
+        taskState.failed = player.x < 250 && player.y > 500;
+
+        return taskState;
+      }
+    },
+    {
+      id: 'stage-3-opener',
+      startMessage: 'Heading south, he saw parts of the forest he\'d never seen before.',
+      endEffect: function(gameState) {
+        const target = game.utils.findObjectByID('tower', gameState.objects);
+        game.utils.fadeInObject(target);
+        game.state.forcedScrolling = true;
+        game.state.forcedScrollCount = 0;
+      },
+      setData: function() {
+        // dummy // TODO make optional
+      },
+      checker: function(player, gameState) {
+        const taskState = {
+          completed: false,
+          failed: false
+        };
+        // Failed if goes back to stage 1, completed if crosses random area's east edge
+        taskState.failed = (
+          player.y < 500 ||
+          // also if they start east in the stage 2 corridor
+          (player.y < 650 && player.x > 400)
+        );
+
+        taskState.completed = player.x > 700;
+
+
+        return taskState;
+      }
+    },
+    {
+      id: 'stage-3-tower',
+      startMessage: 'He noticed the tower, and decided to climb it.',
+      endEffect: function(gameState) {
+        const targets = gameState.objects.filter((obj) => obj.y > 600 && obj.x < 1600);
+        setTimeout(function() {
+          targets.forEach(game.utils.fadeInObject);
+        }, 2000);
+        game.state.forcedScrolling = true;
+        game.state.forcedScrollCount = 0;
+      },
+      setData: function(player, gameState) {
+        const target = game.utils.findObjectByID('tower', gameState.objects);
+        currentTask = {
+          target: {
+            x: target.x,
+            y: target.y
+          },
+          startPosition: {
+            x: player.x,
+            y: player.y
+          }
+        };
+        currentTask.acceptableBounds = {
+          x0: Math.min(currentTask.target.x, currentTask.startPosition.x) - 100,
+          y0: Math.min(currentTask.target.y, currentTask.startPosition.y) - 100,
+          x1: Math.max(currentTask.target.x, currentTask.startPosition.x) + 100,
+          y1: Math.max(currentTask.target.y, currentTask.startPosition.y) + 100
+        }
+      },
+      checker: function(player) {
+        const taskState = {
+          completed: false,
+          failed: false
+        };
+
+        const bounds = currentTask.acceptableBounds;
+        if (
+          player.x < bounds.x0 || player.y < bounds.y0 ||
+          player.x > bounds.x1 || player.y > bounds.y1
+        ) {
+          taskState.failed = true;
+        }
+
+        taskState.completed = game.utils.isObjectInProximity(player, currentTask.target, true);
+
+        return taskState;
+      }
+    },
+    {
+      id: 'stage-3-free-roam',
+      startMessage: 'From here he could see all the way to the seashore.',
+      endEffect: function(gameState) {
+        setTimeout(function() {
+          resetGame('I\'ve told you this story before.');
+        }, 17000);
+      },
+      setData: function(player, gameState) {
+        currentTask = {
+          visitedLake: false,
+          visitedBeach: false,
+          visitedLighthouse: false,
+          visitedBottomCorner: false,
+          visitedTopCorner: false,
+          pickedUpChest: false,
+          lighthouse: game.utils.findObjectByID('lighthouse', gameState.objects)
+        };
+      },
+      checker: function(player, gameState) {
+        const taskState = {
+          completed: false,
+          failed: false
+        };
+
+        const x = player.x;
+        const y = player.y;
+
+        if (!currentTask.visitedBottomCorner && x>1380 && y>1030) {
+          currentTask.visitedBottomCorner = true;
+        }
+        if (!currentTask.visitedTopCorner && x>1450 && y<220) {
+          currentTask.visitedTopCorner = true;
+        }
+        if (!currentTask.visitedLake && y>680 && y<815 && x>775 && x<1230) {
+          currentTask.visitedLake = true;
+          writeMessage('He visited the lake, but he had no interest in fishing.');
+          writeDelayedMessage('', 7000);
+        }
+        if (!currentTask.visitedBeach && x>1520) {
+          currentTask.visitedBeach = true;
+          writeMessage('The sand of the beach held his footsteps forever.');
+          writeDelayedMessage('', 7000);
+        }
+        if (!currentTask.visitedLighthouse && game.utils.isObjectInProximity(player, currentTask.lighthouse)) {
+          currentTask.visitedLighthouse = true;
+          const ships = gameState.objects.filter((obj) => obj.class==='ship');
+          ships.forEach(game.utils.fadeInObject);
+          writeMessage('From the lighthouse, he could see ships leaving the shore.');
+          writeDelayedMessage('', 7000);
+          currentTask.chest = {
+            isHidden: true,
+            assetURL: 'assets/chest.png',
+            id: 'chest'
+          }
+          if (currentTask.visitedBottomCorner) {
+            currentTask.chest.x = 1630;
+            currentTask.chest.y = 50;
+          } else {
+            currentTask.chest.x = 1630;
+            currentTask.chest.y = 1230;
+          }
+          createImageRefFromObjAsset(currentTask.chest);
+          game.state.objects.push(currentTask.chest);
+        }
+        if (currentTask.chest && game.utils.isObjectInProximity(player, currentTask.chest)) {
+          currentTask.pickedUpChest = true;
+          writeMessage('He came across a chest in the sands.');
+          writeDelayedMessage('What was in the chest, is a story for an other day...', 6000);
+          writeDelayedMessage('', 12000);
+        }
+
+        // This task can not be failed.
+        taskState.completed = currentTask.pickedUpChest;
+
+        return taskState;
+      }
+    }
   ];
 })();

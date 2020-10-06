@@ -1,6 +1,7 @@
 body {
   background-color: #eee;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 canvas {
@@ -32,9 +33,14 @@ canvas {
 
   padding: 14px;
   background-color: rgba(255, 255, 255, 0.2);
+  text-shadow: rgba(255, 255, 255, 0.5) 1px 1px 0px;
 
   font-family: 'Dancing Script', cursive;
   font-size: 35px;
+}
+
+.text-overlay:empty {
+  padding: 0;
 }
 
 .text-overlay.resetting {
@@ -70,7 +76,7 @@ canvas {
 #controls #mobile-controls-button {
   float: right;
   background-color: #ccc;
-  width: 100px;
+  width: 130px;
   height: 50px;
   line-height: 50px;
   text-align: center;
@@ -95,26 +101,37 @@ canvas {
 
 #mobile-controls .mobile-button {
   position: absolute;
-  width: 80px;
-  height: 80px;
+  width: 0;
+  height: 0;
   line-height: 80px;
   text-align: center;
-  background-color: gray;
 }
 
 #mobile-controls #mobile-up {
   top: 0;
-  left: 80px;
+  left: 90px;
+  border-right: 50px solid transparent;
+  border-left: 50px solid transparent;
+  border-bottom: 80px solid black;
 }
 #mobile-controls #mobile-right {
-  top: 80px;
-  left: 160px;
+  top: 90px;
+  left: 200px;
+  border-top: 50px solid transparent;
+  border-bottom: 50px solid transparent;
+  border-left: 80px solid black;
 }
 #mobile-controls #mobile-down {
-  top: 160px;
-  left: 80px;
+  top: 200px;
+  left: 90px;
+  border-top: 80px solid black;
+  border-right: 50px solid transparent;
+  border-left: 50px solid transparent;
 }
 #mobile-controls #mobile-left {
-  top: 80px;
+  top: 90px;
   left: 0;
+  border-top: 50px solid transparent;
+  border-right: 80px solid black;
+  border-bottom: 50px solid transparent;
 }

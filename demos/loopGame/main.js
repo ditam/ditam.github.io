@@ -190,6 +190,8 @@ function processCompletedTask() {
   // write task end-message
   if (currentTask.endMessage) {
     writeMessage(currentTask.endMessage);
+  } else {
+    writeMessage('');
   }
 
   // apply task effects
@@ -202,6 +204,14 @@ function processCompletedTask() {
   }
 
   // cycle to next task with a timeout
+
+  game.state.hasTask = false; // startTask will set it to true, see timeout below
+
+  if (currentTask.blocksAutoContinue) {
+    // should be used sparingly - make sure that these tasks process a choice
+    return;
+  }
+
   if (game.state.currentTaskIndex === game.tasks.length -1) {
     console.log('---no more tasks---');
   } else {
@@ -210,21 +220,30 @@ function processCompletedTask() {
     setTimeout(startTask, 1000);
   }
 
-  game.state.hasTask = false; // startTask will set it to true, see timeout above
 }
 
 function processChoice() {
+  game.state.choices--;
   hideChoiceMarker();
   game.state.hasTask = false;
-  writeMessage('But he decided to do something different.');
-  game.meta.stage++;
-
-  game.state.currentTaskIndex = game.state.currentTaskIndex + 1;
-  setTimeout(startTask, 500);
+  if (game.meta.stage === 1) {
+    writeMessage('But he decided to do something different.');
+    game.meta.stage++;
+    game.state.currentTaskIndex = game.state.currentTaskIndex + 1;
+    setTimeout(startTask, 500);
+  } else if (game.meta.stage === 2) {
+    writeMessage('No, I... misremembered. That day he felt brave.');
+    // in stage 2, there's no task to open the map bounds
+    game.state.mapBounds = STAGE_BOUNDS[2];
+    game.meta.stage++;
+    game.state.currentTaskIndex = game.state.currentTaskIndex + 1;
+    setTimeout(startTask, 5000);
+  }
 }
 
 function resetInitialState() {
   game.meta.resets++;
+  game.meta.stage = 1;
   game.state = clone(game._initialState);
   // clone does not carry the HTMLImageElements, so we re-add them
   // (assetURL2ImageCache persists, so this should not be expensive)
@@ -309,48 +328,66 @@ function draw(timestamp) {
   let hasMoved = false;
   const movementAngles = [];
 
-  // move player according to current pressed keys
-  // TODO: separate drawing and simulation
-  if (keysPressed.up) {
-    player.y = Math.max(0, player.y - PLAYER_SPEED);
-    playerInViewport.y = player.y - viewport.y;
-    if (playerInViewport.y <= MAP_SCROLL_PADDING) { // TODO: use padding+speed in bounds check?
-      viewport.y = Math.max(0, viewport.y - PLAYER_SPEED);
+
+  // adjust viewport when forced scrolling - blocks manual movement
+  if (game.state.forcedScrolling) {
+    // NB: be careful when scrolling more than MAP_SCROLL_PADDING, you can push the player out of the viewport
+    if (game.state.forcedScrollCount < 500 && viewport.x + WIDTH < mapBounds.x) {
+      game.state.forcedScrollCount++;
+      viewport.x++;
+    } else {
+      game.state.forcedScrolling = false;
+      game.state.forcedScrollCount = 0;
+    }
+  } else {
+    // move player according to current pressed keys
+    // TODO: separate drawing and simulation
+    if (keysPressed.up) {
+      player.y = Math.max(0, player.y - PLAYER_SPEED);
       playerInViewport.y = player.y - viewport.y;
+      if (playerInViewport.y <= MAP_SCROLL_PADDING) { // TODO: use padding+speed in bounds check?
+        viewport.y = Math.max(0, viewport.y - PLAYER_SPEED);
+        playerInViewport.y = player.y - viewport.y;
+      }
+      hasMoved = true;
+      movementAngles.push(0);
     }
-    hasMoved = true;
-    movementAngles.push(0);
-  }
-  if (keysPressed.right) {
-    player.x = Math.min(mapBounds.x, player.x + PLAYER_SPEED);
-    playerInViewport.x = player.x - viewport.x;
-    if (playerInViewport.x >= WIDTH - MAP_SCROLL_PADDING) {
-      viewport.x = Math.min(mapBounds.x - WIDTH, viewport.x + PLAYER_SPEED);
+    if (keysPressed.right) {
+      player.x = Math.min(mapBounds.x, player.x + PLAYER_SPEED);
+      // clip to shoreline
+      if (player.x > 1695) {
+        player.x = 1695;
+      }
       playerInViewport.x = player.x - viewport.x;
+      if (playerInViewport.x >= WIDTH - MAP_SCROLL_PADDING) {
+        viewport.x = Math.min(mapBounds.x - WIDTH, viewport.x + PLAYER_SPEED);
+        playerInViewport.x = player.x - viewport.x;
+      }
+      hasMoved = true;
+      movementAngles.push(90 * Math.PI / 180);
     }
-    hasMoved = true;
-    movementAngles.push(90 * Math.PI / 180);
-  }
-  if (keysPressed.down) {
-    player.y = Math.min(mapBounds.y, player.y + PLAYER_SPEED);
-    playerInViewport.y = player.y - viewport.y;
-    if (playerInViewport.y >= HEIGHT- MAP_SCROLL_PADDING) {
-      viewport.y = Math.min(mapBounds.y - HEIGHT, viewport.y + PLAYER_SPEED);
+    if (keysPressed.down) {
+      player.y = Math.min(mapBounds.y, player.y + PLAYER_SPEED);
       playerInViewport.y = player.y - viewport.y;
+      if (playerInViewport.y >= HEIGHT- MAP_SCROLL_PADDING) {
+        viewport.y = Math.min(mapBounds.y - HEIGHT, viewport.y + PLAYER_SPEED);
+        playerInViewport.y = player.y - viewport.y;
+      }
+      hasMoved = true;
+      movementAngles.push(180 * Math.PI / 180);
     }
-    hasMoved = true;
-    movementAngles.push(180 * Math.PI / 180);
-  }
-  if (keysPressed.left) {
-    player.x = Math.max(0, player.x - PLAYER_SPEED);
-    playerInViewport.x = player.x - viewport.x;
-    if (playerInViewport.x <= MAP_SCROLL_PADDING) {
-      viewport.x = Math.max(0, viewport.x - PLAYER_SPEED);
+    if (keysPressed.left) {
+      player.x = Math.max(0, player.x - PLAYER_SPEED);
       playerInViewport.x = player.x - viewport.x;
+      if (playerInViewport.x <= MAP_SCROLL_PADDING) {
+        viewport.x = Math.max(0, viewport.x - PLAYER_SPEED);
+        playerInViewport.x = player.x - viewport.x;
+      }
+      hasMoved = true;
+      movementAngles.push(270 * Math.PI / 180);
     }
-    hasMoved = true;
-    movementAngles.push(270 * Math.PI / 180);
   }
+
 
   // add footstep every once in a while
   if (hasMoved && !(drawCount%FOOTSTEP_FREQUENCY)) {
@@ -412,6 +449,12 @@ function draw(timestamp) {
         }
       } else if (obj.isFadingOut) {
         obj.fadeCounter++;
+
+        // special exemption for shoreline to keep half-faded footsteps
+        if (obj.x > 1520 && obj.fadeCounter > (FADE_OUT_DELAY+FADE_OUT_DURATION)/2) {
+          obj.fadeCounter--;
+        }
+
         if (obj.fadeCounter > FADE_OUT_DELAY) {
           let newAlpha = 1 - (obj.fadeCounter - FADE_OUT_DELAY) / FADE_OUT_DURATION;
           // with the delay, we might get out of semantic range - easiest to just clip
@@ -457,23 +500,29 @@ function draw(timestamp) {
 function startDay() {
   writeDelayedMessage('It was a day just like any other.', 1000);
 
-  // DEBUG mode: do not start task to allow free roaming
+  const DEBUG_MODE = false;
 
-  setTimeout(
-    function() {
-      // TODO: only start task after msg is fully shown
-      startTask();
-    },
-    5000
-  );
-
-  // debug: freeroam
-  setTimeout(
-    function() {
-      // TODO remove debug freeroam
-      //game.state.mapBounds = {x: 1600, y: 600};
-    },
-    500
-  );
+  if (DEBUG_MODE) {
+    // free-roam
+    setTimeout(
+      function() {
+        game.state.mapBounds = STAGE_BOUNDS[2];
+        // jump to any task with an id
+        game.state.currentTaskIndex = game.utils.getTaskIndexFromID('stage-3-free-roam');
+        console.log('Jumping to task: #', game.state.currentTaskIndex);
+        startTask();
+      },
+      200
+    );
+  } else {
+    // start game tasks
+    setTimeout(
+      function() {
+        // TODO: only start task after msg is fully shown
+        startTask();
+      },
+      5000
+    );
+  }
 
 }
