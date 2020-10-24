@@ -97,6 +97,7 @@ canvas {
   width: 240px;
   height: 240px;
   display: none;
+  opacity: 0.5;
 }
 
 #mobile-controls .mobile-button {

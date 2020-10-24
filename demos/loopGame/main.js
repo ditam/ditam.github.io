@@ -84,7 +84,7 @@ function writeMessage(msg) {
 
 function writeDelayedMessage(msg, delay) {
   // TODO: guard against scheduling on top of existing. Shared timeout vars?
-  setTimeout(
+  return setTimeout(
     () => writeMessage(msg),
     delay
   );
@@ -191,7 +191,11 @@ function processCompletedTask() {
   if (currentTask.endMessage) {
     writeMessage(currentTask.endMessage);
   } else {
-    writeMessage('');
+    // bugfix: the final task uses a special message setup, so we skip the clearing
+    // (we call this method to call the task's endEffect for good measure, but this could be cleaned up...)
+    if (currentTask.id !== 'stage-3-free-roam') {
+      writeMessage('');
+    }
   }
 
   // apply task effects
@@ -328,6 +332,7 @@ function draw(timestamp) {
   let hasMoved = false;
   const movementAngles = [];
 
+  // TODO: separate drawing and simulation
 
   // adjust viewport when forced scrolling - blocks manual movement
   if (game.state.forcedScrolling) {
@@ -339,9 +344,8 @@ function draw(timestamp) {
       game.state.forcedScrolling = false;
       game.state.forcedScrollCount = 0;
     }
-  } else {
+  } else if (!game.state.forcedWaiting) {
     // move player according to current pressed keys
-    // TODO: separate drawing and simulation
     if (keysPressed.up) {
       player.y = Math.max(0, player.y - PLAYER_SPEED);
       playerInViewport.y = player.y - viewport.y;

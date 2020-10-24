@@ -4,9 +4,11 @@
 const WIDTH = 900;
 const HEIGHT = 500;
 
-const PLAYER_SPEED = 3;
+// note that this is related to footstep frequency below
+const PLAYER_SPEED = 2;
 // draws a new footstep every this many frames - note player speed above
-const FOOTSTEP_FREQUENCY = 5;
+// -- has to be an integer (used in a modulo check)
+const FOOTSTEP_FREQUENCY = 8;
 
 // The map will scroll if the player is within this distance from the viewport edge
 const MAP_SCROLL_PADDING = 150;

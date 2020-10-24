@@ -6,6 +6,7 @@ const game = {
     currentTaskIndex: 0,
     forcedScrolling: false,
     forcedScrollCount: 0,
+    forcedWaiting: false,
     hasTask: false,
     lastDrawTime: 0,
     mapBounds: {
