@@ -100,7 +100,7 @@
     },
     {
       id: 'free-roam-to-fire',
-      startMessage: 'He has gotten cold, so he went to set the fire.',
+      startMessage: 'He had gotten cold, so he went to set the fire.',
       startEffect: function(gameState) {
         const fireOut = game.utils.findObjectByID('fire-out', gameState.objects);
         game.utils.fadeInObject(fireOut);
