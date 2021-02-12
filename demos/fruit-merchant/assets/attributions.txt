@@ -1,0 +1,16 @@
+All assets used are in the public domain, licensed under CC0.
+
+Attributions:
+=============
+
+Background music is King's Feast by RandomMind on OpenGameArt:
+https://opengameart.org/content/medieval-kings-feast
+
+Map image is based on the Overworld Grass Biome tileset by Beast on OpenGameArt:
+https://opengameart.org/content/overworld-grass-biome
+
+Buy/Sell sound effect by artisticdude on OpenGameArt:
+https://opengameart.org/content/inventory-sound-effects
+
+Banner icon based on the following from the Free Icon Library:
+https://icon-library.net/icon/banner-icon-png-21.html

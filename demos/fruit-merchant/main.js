@@ -12,6 +12,20 @@ function getRandomIntFromInterval(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+(function generateTownLabels() {
+  var labelsOverlay = $('#labels-overlay');
+  $('area').each(function(i, area) {
+    var coords = area.coords.split(',').map(function(coord) {return parseInt(coord, 10);});
+    var townName = $(area).data('name');
+    var label = $('<div>').addClass('label').text(townName);
+    label.css({
+      left: coords[0],
+      top: coords[1]
+    });
+    labelsOverlay.append(label);
+  });
+})();
+
 function renderInventory(products, inventory, currentMoney) {
   const inventoryTable = $('#inventory');
   inventoryTable.empty();
@@ -31,7 +45,7 @@ function renderInventory(products, inventory, currentMoney) {
 function renderPricesTable(towns, products, prices) {
   const table = $('#prices-container table');
   table.empty();
-  
+
   // add header row
   const headerRow = $('<tr>');
   headerRow.append($('<th>'));
@@ -43,12 +57,12 @@ function renderPricesTable(towns, products, prices) {
     label.css('background-position', '0');
     label.css('padding-left', '25px');
     label.css('margin-left', '-10px');
-    
+
     const headerCell = $('<th>').append(label);
     headerRow.append(headerCell);
   }
   table.append(headerRow);
-  
+
   // generate town rows
   for (name in towns) {
     const row = $('<tr>');
@@ -64,19 +78,19 @@ function renderPricesTable(towns, products, prices) {
 function renderTradeDialog(townName, town, products, pricesInTown) {
   const container = $('#trade-container');
   container.empty();
-  
+
   const icon = $('<img>').attr('src', 'assets/icons/town' + town.type + '.png');
   container.append(icon);
-  
+
   const title = $('<div>').text('Welcome to ');
   container.append(title);
   const nameLabel = $('<div>').text(townName).addClass('town-name');
   container.append(nameLabel);
-  
+
   const table = $('<table>');
-  const header = $('<tr><th></th><th>Available</th><th>Price</th><th>Sell</th><th>Buy</th></tr>');
+  const header = $('<tr><th></th><th>Available</th><th>Price</th><th></th><th>Sell</th><th>Buy</th><th></th></tr>');
   table.append(header);
-  
+
   // generate rows for fruits
   for (let i=0; i<products.length; i++) {
     const row = $('<tr>');
@@ -84,11 +98,13 @@ function renderTradeDialog(townName, town, products, pricesInTown) {
     row.append($('<td>').append(icon));
     row.append($('<td>').text(town.stockpiles[i]));
     row.append($('<td>').text(pricesInTown[i]));
+    row.append($('<td>').append($('<button>').addClass('sell').text('all').data('index', i)));
     row.append($('<td>').append($('<button>').addClass('sell').text('-1').data('index', i)));
     row.append($('<td>').append($('<button>').addClass('buy').text('+1').data('index', i)));
+    row.append($('<td>').append($('<button>').addClass('buy').text('all').data('index', i)));
     table.append(row);
   }
-  
+
   container.append(table);
 
   const footer = $('<div>').addClass('footer').text('Leave town');
@@ -150,22 +166,23 @@ $(function() {
   // initialize audio assets
   const bgMusic = new Audio('assets/audio/music.mp3');
   const moneySound =  new Audio('assets/audio/money.mp3')
-  
+
   // set bg music to loop
   bgMusic.addEventListener('ended', function() {
     this.currentTime = 0;
     this.play();
   }, false);
-  
+
   // shared state and references
   let soundsOn = false;
+  let labelsOn = false;
   const player = $('#player');
   let money = 0;
   const inventory = [0,0,0,0,0,0,0,0,0,0,0,0];
   const inventory_size = 5;
   function inventoryIsFull() { return inventory.reduce(function(sum, v) {return sum+v;}, 0) >= inventory_size }
   let currentTown = 'Edgemoor';
-  
+
   const towns = {
     Edgemoor: {
       distance: 0,
@@ -208,7 +225,7 @@ $(function() {
       stockpiles: [50,0,50,0,50,0,10,0,10,0,10,0]
     }
   };
-  
+
   const products = [
     {
       name: 'apples',
@@ -295,7 +312,7 @@ $(function() {
       maxPrice: 50
     },
   ];
-  
+
   const prices = {
     // prices are listed in order 1a, 1b, 2a, 2b etc
     Edgemoor:  [2,1,3,1,4,2,10,4,20,8,40,20],
@@ -307,11 +324,11 @@ $(function() {
     Sagewynne: [2,0,3,1,4,2,10,4,20,8,65,20],
     Ostmont:   [2,0,3,1,4,2,10,4,20,8,70,20]
   };
-  
+
   // render initial inventory and prices table
   renderInventory(products, inventory, money);
   renderPricesTable(towns, products, prices);
-  
+
   // connect event handlers
   $('area').click(function() {
     const town = $(this);
@@ -324,15 +341,17 @@ $(function() {
     player.css('left', getAreaPosition(town).left);
     // rot inventory according to distance travelled
     rot(inventory, products, Math.abs(towns[prevTown].distance - towns[currentTown].distance));
+    // NB rotting might trigger a victory by filling the fruit type quota
+    checkVictory(inventory, money);
     renderInventory(products, inventory, money);
     increaseStockpiles(towns, products, prices);
     renderPricesTable(towns, products, prices);
   });
-  
+
   $('#prices-button').click(function() {
     $('#prices-container').toggleClass('visible');
   });
-  
+
   $('#mute-button').click(function() {
     soundsOn = !soundsOn;
     if (soundsOn) {
@@ -343,13 +362,24 @@ $(function() {
       bgMusic.pause();
     }
   });
-  
+
+  $('#labels-button').click(function() {
+    labelsOn = !labelsOn;
+    if (labelsOn) {
+      $('#labels-button img').attr('src', 'assets/icons/label-on.png');
+      $('#labels-overlay').show();
+    } else {
+      $('#labels-button img').attr('src', 'assets/icons/label-off.png');
+      $('#labels-overlay').hide();
+    }
+  });
+
   // Bring up trade dialog when player is clicked
   player.click(function() {
     renderTradeDialog(currentTown, towns[currentTown], products, prices[currentTown]);
     $('#trade-container').addClass('visible');
   });
-  
+
   // Connect delegated handlers for buy and sell actions
   $('#trade-container').on('click', 'button.sell', function() {
     const productIndex = $(this).data('index');
@@ -358,12 +388,16 @@ $(function() {
       showMessage('0 units - can not sell.');
       return;
     }
-    inventory[productIndex] -= 1;
-    towns[currentTown].stockpiles[productIndex] += 1;
-    money += price;
+
+    const count = ($(this).text() === 'all') ? inventory[productIndex] : 1;
+
+    inventory[productIndex] -= count;
+    towns[currentTown].stockpiles[productIndex] += count;
+    money += count * price;
     if (soundsOn) {
       moneySound.play();
     }
+
     renderInventory(products, inventory, money);
     renderTradeDialog(currentTown, towns[currentTown], products, prices[currentTown]);
     checkVictory(inventory, money);
@@ -384,9 +418,23 @@ $(function() {
       showMessage('0 units in town - can not buy.');
       return;
     }
-    inventory[productIndex] += 1;
-    towns[currentTown].stockpiles[productIndex] -= 1;
-    money -= price;
+
+    const itemsAvailable = towns[currentTown].stockpiles[productIndex];
+    const buttonText = $(this).text();
+
+    // if player selected "buy all", count is set to highest purchasable amount
+    const count = (buttonText !== 'all') ? 1
+                  : (money < price * itemsAvailable) ? Math.floor(money / price)
+                  : itemsAvailable;
+
+    // shows bought amount in a message if player wanted to buy all, but couldn't
+    if (buttonText === 'all' && count < itemsAvailable) {
+      showMessage(`You've bought ${count} piece(s) of ${products[productIndex].name}.`);
+    }
+    inventory[productIndex] += count;
+    towns[currentTown].stockpiles[productIndex] -= count;
+    money -= price * count;
+
     if (soundsOn) {
       moneySound.play();
     }
@@ -394,7 +442,7 @@ $(function() {
     renderTradeDialog(currentTown, towns[currentTown], products, prices[currentTown]);
     checkVictory(inventory, money);
   });
-  
+
   // Hide dialogs on clicking
   $('#prices-container').click(function() {
     $('#prices-container').removeClass('visible');
@@ -405,7 +453,7 @@ $(function() {
   $('#trade-container').on('click', '.footer', function() {
     $('#trade-container').removeClass('visible');
   });
-  
+
   // display opening message
   showMessage('Welcome! I heard you want to become a trader, but you don\'t have any money or anything to sell! Well... good luck, kiddo! I hear in Lorevale they are throwing away rotten apples, maybe you can become a rotten apple salesman! Ha-ha.', 'When in town, click on your banner to trade.');
 });
