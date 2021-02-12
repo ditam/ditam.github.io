@@ -455,5 +455,5 @@ $(function() {
   });
 
   // display opening message
-  showMessage('Welcome! I heard you want to become a trader, but you don\'t have any money or anything to sell! Well... good luck, kiddo! I hear in Lorevale they are throwing away rotten apples, maybe you can become a rotten apple salesman! Ha-ha.', 'When in town, click on your banner to trade.');
+  showMessage('Welcome! I heard you want to become a trader, but you don\'t have any money or anything to sell! Well... good luck, kiddo! I hear in Lorvale they are throwing away rotten apples, maybe you can become a rotten apple salesman! Ha-ha.', 'When in town, click on your banner to trade.');
 });
