@@ -1,2 +1,0 @@
-# tree-game
-LD46
