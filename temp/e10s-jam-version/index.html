@@ -1,0 +1,33 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+  <title>New Horizons</title>
+
+  <link rel="stylesheet" type="text/css" href="ext/reset.css">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <div id="hud-header">
+    <div id="time-display">
+      <span>Earth Time: 2307-</span><span id="day-value"></span><span id="time-value"></span>
+    </div>
+    <div id="speed-display">
+      <span>Current Speed: </span><span id="speed-value"></span><span id="time-dilation-value"></span>
+    </div>
+  </div>
+  <div id="container">
+    <canvas id="main-canvas"></canvas>
+    <div id="next-ping-value"></div>
+    <div id="sweep"></div>
+    <div id="msg-log">
+    </div>
+  </div>
+  <div id="debug-log"></div>
+
+  <script src="ext/jquery.js"></script>
+  <script src="messaging.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

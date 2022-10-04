@@ -1,0 +1,106 @@
+body {
+  background-color: rgb(40, 40, 40);
+  padding: 10px;
+  user-select: none;
+  color: white;
+  font-family: monospace;
+}
+
+#container {
+  position: relative;
+  overflow: hidden;
+}
+
+canvas {
+  background-color: white;
+}
+
+#hud-header {
+  width: 1560px; /* match WIDTH -2*padding */
+  padding: 20px;
+  background-color: rgb(2, 2, 54);
+  color: white;
+  font-family: monospace;
+  font-size: 20px;
+  line-height: 25px;
+}
+
+#time-display {
+  display: inline-block;
+  width: 60%;
+}
+
+#speed-display {
+  display: inline-block;
+}
+
+#next-ping-value {
+  font-family: monospace;
+  font-size: 75px;
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  color: rgb(31, 100, 31);
+  text-shadow: 2px 2px 3px black;
+  display: none; /* toggled from JS */
+}
+
+#sweep {
+  position: absolute;
+  top: 0;
+  left: -151px;
+  height: 100%;
+  width: 150px;
+  border-right: 1px solid rgb(0, 137, 0);
+  background-image: linear-gradient(to right, rgba(0,137,0,0), rgb(0,137,0,0.4));
+}
+
+#sweep.transition-on {
+  transition: left 2.5s linear;
+}
+
+#sweep.triggered {
+  border-right: 1px solid red;
+  background-image: linear-gradient(to right, rgba(255,0,0,0), rgb(255,0,0,0.4));
+}
+
+#sweep.visible {
+  left: 1600px;
+}
+
+#msg-log {
+  position: absolute;
+  bottom: 100px;
+  left: 80px;
+}
+
+#msg-log .msg {
+  line-height: 28px;
+  font-size: 25px;
+  font-family: monospace;
+  color: white;
+  text-shadow: 3px 3px 3px black;
+  margin-bottom: 12px;
+}
+
+#msg-log .msg.player {
+  color: #a7adff;
+  font-weight: 600;
+  font-style: italic;
+  text-shadow: 2px 2px 3px #060e34;
+}
+
+#speed-selector {
+  position: absolute;
+  color: white;
+  font-family: monospace;
+  font-size: 20px;
+}
+
+.game-over-msg {
+  position: absolute;
+  font-size: 50px;
+  left: 40%;
+  top: 40%;
+  text-shadow: 3px 3px 5px black;
+}
