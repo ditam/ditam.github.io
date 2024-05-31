@@ -1,3 +1,10 @@
+html, body {
+  width: 100%;
+}
+
+body {
+  padding-left: 40px;
+}
 
 h1 {
   font-size: 1.2em;
@@ -14,5 +21,16 @@ li.starred::before {
   position: absolute;
   margin-left: -50px;
   font-size: 25px;
-  color: rgb(15 52 80 / 12%);
+  color: rgb(15 52 80 / 25%);
+}
+
+@media (width <= 550px) {
+  li.starred::before {
+    margin-left: -52px;
+    font-size: 26px;
+  }
+
+  .details {
+    font-size: 0.75em;
+  }
 }
