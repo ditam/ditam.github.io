@@ -8,3 +8,11 @@ h1 {
   color: #ccc;
   font-size: 0.9em;
 }
+
+li.starred::before {
+  content: '\2605';
+  position: absolute;
+  margin-left: -50px;
+  font-size: 25px;
+  color: rgb(15 52 80 / 12%);
+}
