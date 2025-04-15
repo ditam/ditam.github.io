@@ -1,0 +1,230 @@
+body {
+  background-color: #6c7255;
+  user-select: none;
+
+  font-family: "Federo", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+#game-area {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  background-image: url('assets/bg-0.png');
+}
+
+/* this is a hack to darken the BG without the rest of the content */
+#game-area.darkened{ /* matches level 4 bg */
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
+    url(assets/bg-0.png);
+}
+#game-area.darkened-2 {
+  background-image: /* matches level 6 bg */
+    linear-gradient(rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0.32)),
+    url(assets/bg-0.png);
+}
+
+#worker-list {
+  position: absolute;
+  left: 160px;
+  top: 40px;
+  height: 120px;
+}
+
+#worker-list .worker {
+  display: inline-block;
+  width: 64px;
+  height: 120px;
+  border-radius: 3px;
+  margin-right: 25px;
+  cursor: pointer;
+}
+
+#worker-list .portrait {
+  width: 64px;
+  height: 96px;
+  background-size: contain;
+  background-color: #8c5151;
+}
+#worker-list .label {
+  line-height: 20px;
+  font-size: 16px;
+  text-align: center;
+  color: black;
+}
+
+#worker-list .worker.active .label {
+  background-color: rgb(71, 71, 175);
+}
+
+#main-wrapper {
+  position: absolute;
+  left: 160px;
+  top: 160px;
+
+  background-color: white;
+}
+
+.bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.clipped {
+  clip-path: url(/#clip-1);
+}
+
+.cell {
+  position: relative;
+  display: inline-block;
+  background-color: transparent;
+}
+
+.cell:hover {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.worker-marker {
+  position: absolute;
+  width: 25px; /* match constant! */
+  height: 25px;
+  background-color: rgb(79, 57, 39);
+  border: 1px solid white;
+  border-radius: 15px;
+
+  transition-property: top, left;
+  transition-duration: 2s;
+  transition-timing-function: ease-in-out;
+}
+
+.worker-marker.active {
+  background-color: rgb(50, 50, 150);
+}
+
+.tentacle {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  background: url(assets/tent1.png) left center;
+  background-size: 512px 64px;
+  animation: play 3s steps(8);
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.tentacle.t1 {
+  left: 263px;
+  top: 643px;
+}
+
+.tentacle.t2 {
+  left: 920px;
+  top: 560px;
+  rotate: 70deg;
+}
+
+.tentacle.t3 {
+  left: 1000px;
+  top: 58px;
+  rotate: 195deg;
+}
+
+@keyframes play {
+  100% { background-position: -512px; }
+}
+
+.tentacle-big {
+  position: absolute;
+  left: 586px;
+  top: 152px;
+  /* FIXME: these are stupid content-scaled values, fix on 1:1 screen... */
+  width: 333.33px;
+  height: 266.67px;
+  background: url(assets/tent2.png);
+  background-size: 1333.333px 266.67px;
+  animation: play-big 3s steps(3);
+  animation-fill-mode: forwards;
+}
+
+@keyframes play-big {
+  100% { background-position: -1000px; }
+}
+
+#story-dialog {
+  border: 2px solid #8c5151;
+  background-color: #c3b28b;
+  border-radius: 5px;
+  position: absolute;
+  width: 1280px;
+  top: 800px;
+  left: 320px;
+  font-size: 36px;
+  padding: 12px;
+  line-height: 42px;
+}
+
+#story-dialog #portrait {
+  position: absolute;
+  top: -302px;
+  right: 0;
+  margin: 25px;
+  border: 2px solid #8c5151;
+  border-bottom: none;
+  border-radius: 4px;
+  background-color: #8c5151;
+}
+
+#story-dialog #portrait img {
+  height: 275px;
+  image-rendering: pixelated;
+}
+
+#choices {
+  text-align: right;
+  line-height: 16px;
+  margin: 2px;
+}
+
+#choices div {
+  display: inline-block;
+  padding: 16px;
+}
+
+#choices div:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.end-dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  color: white;
+}
+
+.end-dialog .end-msg {
+  text-align: center;
+  line-height: 1080px;
+  font-size: 32px;
+}
+
+.end-dialog .end-title {
+  text-align: center;
+  padding-top: 400px;
+  font-size: 192px;
+}
+
+.end-dialog .end-subtitle {
+  text-align: center;
+  padding-top: 100px;
+  font-size: 32px;
+}

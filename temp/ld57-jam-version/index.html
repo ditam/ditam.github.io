@@ -1,0 +1,62 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+  <title>The Dig</title>
+
+  <link rel="icon" href="favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="ext/reset.css">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Federo&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="game-area">
+    <div id="toolbar">
+      <div id="worker-list">
+      </div>
+      <div id="resource-list">
+      </div>
+    </div>
+    <div id="main-wrapper">
+      <img class="bg" id="bg-before" />
+      <img class="bg clipped" id="bg-after" />
+      <div class="worker-marker" id="worker-1"></div>
+      <div class="worker-marker" id="worker-2"></div>
+      <div class="worker-marker" id="worker-3"></div>
+    </div>
+  </div>
+
+  <div id="story-dialog">
+    <div id="portrait">
+      <img src="assets/advisor.png" />
+    </div>
+    <div id="msg"></div>
+    <div id="choices">
+      <div id="end-button">Abandon dig site</div>
+      <div id="continue-button">Continue</div>
+    </div>
+  </div>
+
+  <svg width="0" height="0">
+    <defs>
+      <clipPath id="clip-1">
+        <!--Filled from js with rects representing dig sites, eg:-->
+        <!--<rect x="100" y="100" width="100" height="100" />-->
+      </clipPath>
+    </defs>
+  </svg>
+
+  <script src="ext/jquery.js"></script>
+
+  <script src="constants.js" type="module"></script>
+  <script src="utils.js" type="module"></script>
+  <script src="levels.js" type="module"></script>
+
+  <script src="main.js" type="module"></script>
+</body>
+</html>
