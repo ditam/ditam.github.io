@@ -76,7 +76,7 @@ body {
 }
 
 .clipped {
-  clip-path: url(/#clip-1);
+  clip-path: url(#clip-1);
 }
 
 .cell {
