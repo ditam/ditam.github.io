@@ -1,0 +1,203 @@
+body {
+  background-color: #eee;
+
+  color: white;
+
+  font-size: 22px;
+  font-weight: 400;
+  font-style: normal;
+
+  user-select: none;
+}
+
+#main-container {
+  position: absolute;
+}
+
+#main-canvas {
+  border: 1px solid black;
+  background-color: rgb(28, 20, 56); /* rgb(12, 15, 39); */
+}
+
+#narration-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  /* width and height set from JS to match canvas */
+  box-sizing: border-box;
+  color: white;
+  padding: 200 400px;
+  line-height: 1.5em;
+  font-size: 32px;
+  text-shadow: 2px 4px 5px black;
+}
+
+#intro-cover {
+  position: absolute;
+  left: 0;
+  top: 0;
+  /* width and height set from JS to match canvas */
+  background-color: rgb(28, 20, 56);
+  display: flex;
+  align-items: center;
+  transition: all 3s ease-in;
+}
+
+#intro-cover.transparent {
+  opacity: 0;
+}
+
+#intro-cover img {
+  margin: auto; /* needed for h-centering */
+  transition: all 4s ease;
+}
+
+#intro-cover img.zoomed-out {
+  transform: scale(0.25);
+}
+
+#debug-container {
+  position: absolute;
+  top: 1020px;
+  color: black;
+}
+
+#header {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+}
+
+#header > div {
+  display: inline-block;
+  padding-right: 24px;
+}
+
+#comms-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 8px;
+  /* This used to be clickable, but probably no longer makes sense... */
+}
+
+#comms-list {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+}
+
+.comms-entry {
+  margin-bottom: 4px;
+  padding: 14px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.comms-entry:hover {
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+#comms-dialog {
+  position: absolute;
+  box-sizing: border-box;
+  /* needs to stay 0, 0 to block scrolling */
+  top: 0;
+  left: 0;
+  padding: 400px;
+  line-height: 1.3em;
+}
+
+#comms-wrapper {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 18px;
+  min-height: 130px;
+}
+
+#comms-title {
+  margin-bottom: 18px;
+}
+
+#comms-footer {
+  margin-top: 18px;
+  position: relative;
+}
+
+#comms-footer > div {
+  display: inline-block;
+}
+
+#comms-action-button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#comms-close-button {
+  position: absolute;
+  right: 0;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#comms-action-button:hover,
+#comms-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+#comms-action-button-desc {
+  color: gray;
+}
+
+#cover-image {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding-top: 200px;
+  box-sizing: border-box;
+}
+
+#cover-image #label {
+  margin-bottom: 10px;
+}
+
+#start-button {
+  display: none;
+  cursor: pointer;
+  padding: 24px;
+}
+
+#loader {
+  margin: 24px;
+}
+
+#victory-screen {
+  display: none;
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding-top: 200px;
+  box-sizing: border-box;
+  line-height: 2em;
+
+  /* allow music attributions to be copied easily */
+  user-select: text;
+}
+
+#victory-screen .spacer {
+  margin-bottom: 200px;
+}

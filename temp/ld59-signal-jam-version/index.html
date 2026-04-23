@@ -1,0 +1,75 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+  <title>Radio Free Earth</title>
+
+  <link rel="stylesheet" type="text/css" href="ext/reset.css">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+
+  <div id="main-container">
+    <canvas id="main-canvas"></canvas>
+    <div id="intro-cover">
+      <img src="img/the-dodo.png" />
+    </div>
+    <div id="narration-container"></div>
+
+    <div id="header">
+      <div id="money-counter"></div>
+      <div id="coverage-counter"></div>
+    </div>
+
+    <div id="comms-button">Comms in range:</div>
+    <div id="comms-list"></div>
+
+    <div id="comms-dialog">
+      <div id="comms-wrapper">
+        <div id="comms-title"></div>
+        <div id="comms-text"></div>
+        <div id="comms-footer">
+          <div id="comms-action-button"></div>
+          <div id="comms-action-button-desc"></div>
+          <div id="comms-close-button"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cover-image">
+    <div id="label">Name your character:</div>
+    <input id="name-input" type="text" />
+    <div id="loader">
+      Loading assets <span id="loadCount">0</span> / <span id="loadCountTotal">0</span>...
+    </div>
+    <div id="start-button">Start</div>
+  </div>
+
+  <div id="victory-screen">
+    <div>Congratulations!</div>
+    <div>The signal from Radio Free Earth has reached 100% of the population.</div>
+    <div>Thank you for playing!</div>
+    <div class="spacer"></div>
+    <div>Radio Free Earth was playing the following songs:</div>
+    <div>"in a sentimental mood" by Joe Reynolds - Professorlamp from opengameart.org</div>
+    <div>"Lament of the Vaquero" by city11 from freesound.org</div>
+    <div>"Lincoln Soundtrack" by TheWandermiles from freesound.org</div>
+  </div>
+
+  <div id="debug-container">
+    <div id="debug-log"></div>
+    <div id="debug-log2"></div>
+    <div id="debug-log3"></div>
+  </div>
+
+  <script src="ext/jquery.js"></script>
+
+  <script src="constants.js" type="module"></script>
+  <script src="utils.js" type="module"></script>
+  <script src="narration.js" type="module"></script>
+  <script src="mapdata.js" type="module"></script>
+  <script src="main.js" type="module"></script>
+</body>
+</html>
